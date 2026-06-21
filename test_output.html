@@ -1,0 +1,748 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Event Planner - EventAI</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+<style>
+    body {
+        background-color: #f8fafc;
+    }
+    .planner-header {
+        text-align: center;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    .planner-header h1 {
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    .planner-header p {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+    .planner-icon {
+        color: #6366f1;
+    }
+    .card-custom {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        padding: 1.5rem;
+        height: 100%;
+    }
+    .btn-generate {
+        background-color: #6366f1;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        width: 100%;
+        transition: all 0.2s;
+    }
+    .btn-generate:hover {
+        background-color: #4f46e5;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
+    }
+    .btn-generate:disabled {
+        background-color: #94a3b8;
+        transform: none;
+        box-shadow: none;
+    }
+    .textarea-custom {
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        resize: none;
+        padding: 1rem;
+        font-size: 0.95rem;
+        min-height: 200px;
+    }
+    .textarea-custom:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    .info-box {
+        background-color: #f8fafc;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-top: 1.5rem;
+    }
+    .info-box h6 {
+        color: #4f46e5;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .info-list li {
+        color: #475569;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .info-list li i {
+        color: #6366f1;
+    }
+    .section-title {
+        font-weight: 600;
+        color: #6366f1;
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .plan-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 1rem;
+    }
+    .plan-header h5 {
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .btn-outline-custom {
+        border: 1px solid #6366f1;
+        color: #6366f1;
+        background: transparent;
+        font-weight: 500;
+        border-radius: 6px;
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+    }
+    .btn-outline-custom:hover {
+        background: #f5f3ff;
+    }
+    .event-title-main {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .badge-recommended {
+        background-color: #dcfce7;
+        color: #166534;
+        font-weight: 500;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+    }
+    .event-meta {
+        color: #64748b;
+        font-size: 0.9rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    .event-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    .schedule-item {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    .schedule-time {
+        color: #6366f1;
+        font-weight: 600;
+        min-width: 70px;
+    }
+    .schedule-activity {
+        color: #334155;
+    }
+    .resource-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        align-items: center;
+    }
+    .resource-name {
+        color: #334155;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .resource-name::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #10b981;
+    }
+    .resource-qty {
+        background-color: #f1f5f9;
+        color: #10b981;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 0.8rem;
+    }
+    .budget-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+    }
+    .budget-name {
+        color: #334155;
+    }
+    .budget-amt {
+        color: #1e293b;
+        font-weight: 500;
+    }
+    .budget-total {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+        font-weight: 600;
+        color: #6366f1;
+    }
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #f1f5f9;
+    }
+    .task-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        color: #334155;
+    }
+    .task-item input[type="checkbox"] {
+        margin-top: 0.2rem;
+    }
+    .risk-item {
+        font-size: 0.9rem;
+        color: #334155;
+        margin-bottom: 0.75rem;
+        padding-left: 1rem;
+        position: relative;
+    }
+    .risk-item::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #64748b;
+    }
+    .recommendation-banner {
+        background-color: #f0fdf4;
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin-top: 2rem;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        color: #166534;
+        font-size: 0.95rem;
+        border: 1px solid #dcfce7;
+    }
+    .spinner-overlay {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        border-radius: 12px;
+        display: none;
+    }
+    .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #6366f1;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .nav-link-pro {
+            background: linear-gradient(45deg, #6610f2, #6f42c1);
+            color: white !important;
+            border-radius: 8px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .nav-link-pro:hover {
+            transform: scale(1.05);
+            color: white !important;
+        }
+        .nav-link-ai {
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            color: white !important;
+            border-radius: 8px;
+            padding: 8px 20px !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.2);
+        }
+        .nav-link-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(13, 110, 253, 0.4);
+            color: white !important;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Professional Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-primary" href="/">EventAI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="#">Features</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="#">Pricing</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="/accounts/login/">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="/accounts/register/">Register</a>
+                        </li>
+                    
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link nav-link-ai d-flex align-items-center gap-2" href="/planner/"><i class="bi bi-robot"></i> AI Planner</a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="nav-link nav-link-pro" href="/pro/">🚀 Pro</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="py-5">
+        <div class="container">
+            
+        </div>
+        
+<div class="container pb-5">
+    <div class="planner-header">
+        <h1><i class="bi bi-stars planner-icon"></i> AI Event Generator</h1>
+        <p>Describe your event and let AI create a complete event plan for you</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left Panel -->
+        <div class="col-lg-4">
+            <div class="card-custom">
+                <h5 class="section-title text-dark"><i class="bi bi-record-circle planner-icon text-primary"></i> Describe Your Event</h5>
+                <p class="text-muted small mb-3">Tell us about your event and requirements</p>
+                
+                <form id="aiPlanForm">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="PJ8TOGeKtvpuQOhLjDUdhhCbEuEwif5ywWMZFLtcyEok6bDt7T8Vt5rRqrLWEkbS">
+                    <div class="mb-3 position-relative">
+                        <textarea class="form-control textarea-custom" id="promptText" name="prompt" placeholder="I want to organize a community sports day for 150 people in Pune next month. The event will include games, prizes, food and entertainment. Budget is around ₹80,000." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-generate" id="generateBtn">
+                        <i class="bi bi-stars"></i> Generate Event Plan
+                    </button>
+                </form>
+
+                <div class="info-box">
+                    <h6><i class="bi bi-stars"></i> AI will generate:</h6>
+                    <ul class="info-list">
+                        <li><i class="bi bi-check-circle-fill"></i> Event Overview & Schedule</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Required Resources</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Budget Breakdown</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Task Checklist</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Risk & Recommendations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="col-lg-8">
+            <div class="card-custom position-relative" style="min-height: 600px;">
+                <div class="spinner-overlay" id="loadingSpinner">
+                    <div class="loader"></div>
+                    <h5 class="text-primary fw-bold">Generating Event Plan...</h5>
+                    <p class="text-muted small">AI is analyzing your request and building the perfect strategy.</p>
+                </div>
+
+                <div class="plan-header">
+                    <h5><i class="bi bi-braces planner-icon text-success"></i> AI Generated Event Plan</h5>
+                    <button class="btn btn-outline-custom"><i class="bi bi-download"></i> Download Plan</button>
+                </div>
+
+                <div id="emptyState" class="text-center text-muted" style="margin-top: 150px;">
+                    <i class="bi bi-file-earmark-text display-1 text-light"></i>
+                    <p class="mt-3">Your generated event plan will appear here.</p>
+                </div>
+
+                <div id="planContent" style="display: none;">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-success" style="width: 48px; height: 48px; font-size: 1.5rem;">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+                        <div>
+                            <div class="event-title-main">
+                                <span id="rEventName">Community Sports Day 2026</span>
+                                <span class="badge-recommended">Recommended</span>
+                            </div>
+                            <div class="event-meta">
+                                <span><i class="bi bi-clock"></i> <span id="rDuration">One Day Event</span></span>
+                                <span><i class="bi bi-geo-alt"></i> <span id="rLocation">Pune</span></span>
+                                <span><i class="bi bi-people"></i> ~<span id="rAttendees">150</span> People</span>
+                                <span><i class="bi bi-currency-rupee"></i> Budget: <span id="rBudget">80,000</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <!-- Schedule -->
+                        <div>
+                            <div class="section-title"><i class="bi bi-calendar-range"></i> Event Schedule</div>
+                            <div id="rSchedule">
+                                <!-- JS populated -->
+                            </div>
+                        </div>
+
+                        <!-- Resources -->
+                        <div>
+                            <div class="section-title"><i class="bi bi-people"></i> Required Resources</div>
+                            <div id="rResources">
+                                <!-- JS populated -->
+                            </div>
+                        </div>
+
+                        <!-- Budget -->
+                        <div>
+                            <div class="section-title"><i class="bi bi-currency-rupee"></i> Budget Breakdown</div>
+                            <div id="rBudgetList">
+                                <!-- JS populated -->
+                            </div>
+                            <div class="budget-total">
+                                <span>Total Budget</span>
+                                <span id="rBudgetTotalAmt">₹80,000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <!-- Tasks -->
+                        <div>
+                            <div class="section-title text-success"><i class="bi bi-check2-all"></i> Task Checklist</div>
+                            <div id="rTasks">
+                                <!-- JS populated -->
+                            </div>
+                        </div>
+
+                        <!-- Risks -->
+                        <div>
+                            <div class="section-title text-warning"><i class="bi bi-exclamation-triangle"></i> Risks & Recommendations</div>
+                            <div id="rRisks">
+                                <!-- JS populated -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recommendation-banner">
+                        <i class="bi bi-star text-success"></i> 
+                        <span><strong>AI Recommendation:</strong> <span id="rRecommendation">This event has great potential for community engagement and healthy participation!</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.getElementById('aiPlanForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const promptText = document.getElementById('promptText').value;
+    if (!promptText.trim()) return;
+
+    const btn = document.getElementById('generateBtn');
+    const spinner = document.getElementById('loadingSpinner');
+    const emptyState = document.getElementById('emptyState');
+    const planContent = document.getElementById('planContent');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generating...';
+    spinner.style.display = 'flex';
+    emptyState.style.display = 'none';
+    planContent.style.display = 'none';
+
+    fetch('/planner/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: new URLSearchParams({
+            'prompt': promptText
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        spinner.style.display = 'none';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-stars"></i> Generate Event Plan';
+        
+        if (data.error) {
+            alert('Error: ' + data.error);
+            emptyState.style.display = 'block';
+            return;
+        }
+
+        const p = data.plan;
+        
+        document.getElementById('rEventName').innerText = p.event_name || 'Untitled Event';
+        document.getElementById('rDuration').innerText = p.duration || '-';
+        document.getElementById('rLocation').innerText = p.location || '-';
+        document.getElementById('rAttendees').innerText = p.attendees || '0';
+        
+        const formatter = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+        const budgetText = formatter.format(p.budget || 0);
+        document.getElementById('rBudget').innerText = budgetText.replace('₹', '');
+        document.getElementById('rBudgetTotalAmt').innerText = budgetText;
+        
+        // Schedule
+        const schedContainer = document.getElementById('rSchedule');
+        schedContainer.innerHTML = '';
+        (p.schedule || []).forEach(item => {
+            schedContainer.innerHTML += `<div class="schedule-item"><div class="schedule-time">${item.time}</div><div class="schedule-activity">${item.activity}</div></div>`;
+        });
+
+        // Resources
+        const resContainer = document.getElementById('rResources');
+        resContainer.innerHTML = '';
+        (p.resources || []).forEach(item => {
+            const qtyStr = String(item.quantity);
+            const isCheck = qtyStr.toLowerCase() === 'yes' || qtyStr.toLowerCase() === 'true' || qtyStr === '✔';
+            const qtyHtml = isCheck ? '<i class="bi bi-check text-success"></i>' : qtyStr;
+            resContainer.innerHTML += `<div class="resource-item"><div class="resource-name">${item.item}</div><div class="resource-qty">${qtyHtml}</div></div>`;
+        });
+
+        // Budget
+        const budContainer = document.getElementById('rBudgetList');
+        budContainer.innerHTML = '';
+        (p.budget_breakdown || []).forEach(item => {
+            budContainer.innerHTML += `<div class="budget-item"><div class="budget-name">${item.category}</div><div class="budget-amt">${formatter.format(item.amount)}</div></div>`;
+        });
+
+        // Tasks
+        const taskContainer = document.getElementById('rTasks');
+        taskContainer.innerHTML = '';
+        (p.tasks || []).forEach(item => {
+            taskContainer.innerHTML += `<div class="task-item"><input type="checkbox" ${item.completed ? 'checked' : ''}> <label>${item.task}</label></div>`;
+        });
+
+        // Risks
+        const riskContainer = document.getElementById('rRisks');
+        riskContainer.innerHTML = '';
+        (p.risks || []).forEach(item => {
+            riskContainer.innerHTML += `<div class="risk-item">${item}</div>`;
+        });
+
+        document.getElementById('rRecommendation').innerText = p.recommendations || '';
+        
+        planContent.style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        spinner.style.display = 'none';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-stars"></i> Generate Event Plan';
+        alert('An error occurred. Please try again.');
+        emptyState.style.display = 'block';
+    });
+});
+</script>
+
+
+    </main>
+
+    <!-- Premium Enterprise Footer -->
+    <footer class="bg-white border-top mt-auto pt-5 pb-4">
+        <div class="container">
+            <div class="row g-4 mb-5">
+                <!-- Brand & Tagline -->
+                <div class="col-lg-4 col-md-12">
+                    <div class="mb-3">
+                        <a class="navbar-brand text-primary fs-4" href="/">EventAI</a>
+                        <span class="badge bg-light text-muted border ms-2" style="font-size: 0.65rem; vertical-align: middle;">v1.0</span>
+                    </div>
+                    <p class="text-muted small mb-4" style="max-width: 280px; line-height: 1.6;">
+                        Empowering organizers with AI-driven operational intelligence and real-time event analytics.
+                    </p>
+                    <div class="d-flex gap-3 mb-4">
+                        <a href="#" class="text-muted hover-primary transition-all"><i class="bi bi-linkedin fs-5"></i></a>
+                        <a href="#" class="text-muted hover-primary transition-all"><i class="bi bi-github fs-5"></i></a>
+                        <a href="#" class="text-muted hover-primary transition-all"><i class="bi bi-envelope-fill fs-5"></i></a>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 small text-muted">
+                        <span class="text-success" style="font-size: 0.5rem;"><i class="bi bi-circle-fill"></i></span>
+                        <span style="font-size: 0.75rem; font-weight: 500;">All Systems Operational</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Groups -->
+                <div class="col-lg-2 col-md-4 col-6">
+                    <h6 class="fw-bold text-dark small text-uppercase tracking-wider mb-3">Platform</h6>
+                    <ul class="list-unstyled small d-grid gap-2">
+                        <li><a href="/dashboard/" class="text-muted text-decoration-none hover-primary">Dashboard</a></li>
+                        <li><a href="/my-events/" class="text-muted text-decoration-none hover-primary">My Events</a></li>
+                        <li><a href="/pro/" class="text-muted text-decoration-none hover-primary">Create Event</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-4 col-6">
+                    <h6 class="fw-bold text-dark small text-uppercase tracking-wider mb-3">Resources</h6>
+                    <ul class="list-unstyled small d-grid gap-2">
+                        <li><a href="#" class="text-muted text-decoration-none hover-primary">Documentation</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none hover-primary">Help Center</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none hover-primary">Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-4 col-12">
+                    <h6 class="fw-bold text-dark small text-uppercase tracking-wider mb-3">Company</h6>
+                    <ul class="list-unstyled small d-grid gap-2">
+                        <li><a href="#" class="text-muted text-decoration-none hover-primary">About Us</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none hover-primary">Privacy Policy</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none hover-primary">Terms of Service</a></li>
+                    </ul>
+                </div>
+
+                <!-- Trust Badges -->
+                <div class="col-lg-2 col-md-12">
+                    <div class="saas-card bg-light border-0 p-3 rounded-4">
+                        <div class="small fw-bold text-muted text-uppercase mb-3" style="font-size: 0.65rem;">Technology Stack</div>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="d-flex align-items-center gap-2 small text-dark">
+                                <i class="bi bi-stars text-primary"></i> <span>Gemini AI</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 small text-dark">
+                                <i class="bi bi-shield-check text-success"></i> <span>Secure Cloud</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar / Trust Section -->
+            <div class="border-top pt-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
+                            <span class="badge bg-light text-muted border rounded-pill px-3 py-2 small fw-normal"><i class="bi bi-cpu-fill me-1"></i> AI Powered</span>
+                            <span class="badge bg-light text-muted border rounded-pill px-3 py-2 small fw-normal"><i class="bi bi-lock-fill me-1"></i> Secure Platform</span>
+                            <span class="badge bg-light text-muted border rounded-pill px-3 py-2 small fw-normal"><i class="bi bi-bar-chart-fill me-1"></i> Real-Time Analytics</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <span class="text-muted small">&copy; 2026 EventAI. Enterprise-grade execution for modern events.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Global Styling Refinements -->
+    <style>
+        .hover-primary:hover { color: var(--bs-primary) !important; transition: color 0.2s ease; }
+        .transition-all { transition: all 0.3s ease; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        .hover-primary { cursor: pointer; }
+    </style>
+
+    <!-- Bootstrap 5 Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

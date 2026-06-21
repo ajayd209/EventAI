@@ -1,0 +1,411 @@
+{% extends 'base.html' %}
+
+{% block title %}My Events - EventAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Premium SaaS Dashboard Styling */
+    .dashboard-header {
+        margin-bottom: 2.5rem;
+    }
+    .kpi-card {
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: #ffffff;
+        border: 1px solid #f3f4f6;
+    }
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    }
+    .kpi-icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    
+    /* Toolbar Controls */
+    .controls-wrapper {
+        background: #ffffff;
+        padding: 1rem;
+        border-radius: 16px;
+        border: 1px solid #f3f4f6;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+    .search-input {
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding-left: 2.75rem;
+        height: 46px;
+        transition: all 0.2s ease;
+    }
+    .search-input:focus {
+        background-color: #ffffff;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+    }
+    .filter-select {
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        height: 46px;
+        font-weight: 500;
+        color: #4b5563;
+        cursor: pointer;
+    }
+    
+    /* Event Cards */
+    .event-card {
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border-color: #d1d5db;
+    }
+    .event-card-header {
+        border-bottom: 1px solid #f3f4f6;
+        padding: 1.5rem;
+    }
+    .event-card-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+    }
+    .event-card-footer {
+        padding: 1.25rem 1.5rem;
+        background-color: #f9fafb;
+        border-top: 1px solid #f3f4f6;
+        border-radius: 0 0 16px 16px;
+    }
+    
+    /* Typography & Badges */
+    .card-title-text {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+    .info-row {
+        display: flex;
+        align-items: center;
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-bottom: 0.75rem;
+    }
+    .info-row i {
+        width: 20px;
+        color: #9ca3af;
+    }
+    .status-box {
+        background: #f3f4f6;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 1.5rem;
+    }
+    .badge-soft {
+        font-weight: 600;
+        padding: 0.4em 0.8em;
+        border-radius: 6px;
+    }
+    
+    /* Buttons */
+    .btn-workspace {
+        background: #111827;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.6rem 1rem;
+        transition: background 0.2s ease;
+    }
+    .btn-workspace:hover {
+        background: #374151;
+        color: #ffffff;
+    }
+    .btn-create {
+        background: linear-gradient(135deg, #0d6efd, #6f42c1);
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.7rem 1.5rem;
+        color: white;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(13, 110, 253, 0.3);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center dashboard-header gap-3">
+        <div>
+            <h2 class="fw-bold mb-1">My Events</h2>
+            <p class="text-muted mb-0">Manage your AI-generated workspaces and operations.</p>
+        </div>
+        <a href="{% url 'ai_engine:create_event_ai' %}" class="btn btn-create shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> New Event
+        </a>
+    </div>
+
+    <!-- Hidden Data for JS KPIs -->
+    <div id="hidden-kpi-data" style="display: none;">
+        {% for event in events %}
+            <div class="kpi-event" data-budget="{{ event.budget }}" data-upcoming="{% if event.days_remaining > 0 %}1{% else %}0{% endif %}"></div>
+            {% for task in event.timeline.all %}
+                {% if task.status == 'Pending' %}
+                    <div class="kpi-task-pending"></div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <!-- Top KPI Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-xl-3">
+            <div class="kpi-card p-4 d-flex align-items-center">
+                <div class="kpi-icon-box bg-primary bg-opacity-10 text-primary me-3">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+                <div>
+                    <p class="text-muted small fw-bold text-uppercase mb-1">Total Events</p>
+                    <h3 class="fw-bold mb-0" id="kpi-total">0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="kpi-card p-4 d-flex align-items-center">
+                <div class="kpi-icon-box bg-success bg-opacity-10 text-success me-3">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div>
+                    <p class="text-muted small fw-bold text-uppercase mb-1">Upcoming</p>
+                    <h3 class="fw-bold mb-0" id="kpi-upcoming">0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="kpi-card p-4 d-flex align-items-center">
+                <div class="kpi-icon-box bg-info bg-opacity-10 text-info me-3">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div>
+                    <p class="text-muted small fw-bold text-uppercase mb-1">Total Budget</p>
+                    <h3 class="fw-bold mb-0" id="kpi-budget">$0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="kpi-card p-4 d-flex align-items-center">
+                <div class="kpi-icon-box bg-warning bg-opacity-10 text-warning me-3">
+                    <i class="bi bi-list-task"></i>
+                </div>
+                <div>
+                    <p class="text-muted small fw-bold text-uppercase mb-1">Pending Tasks</p>
+                    <h3 class="fw-bold mb-0" id="kpi-tasks">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toolbar Controls -->
+    <div class="controls-wrapper mb-4">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-6 col-lg-5">
+                <!-- Search stays integrated with backend -->
+                <form method="GET" class="position-relative">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    <input type="text" name="q" class="form-control search-input" placeholder="Search events by name..." value="{{ request.GET.q }}">
+                </form>
+            </div>
+            <div class="col-md-6 col-lg-7">
+                <div class="d-flex gap-3 justify-content-md-end">
+                    <select id="typeFilter" class="form-select filter-select w-auto">
+                        <option value="All">All Types</option>
+                        <!-- Extract unique types dynamically via JS -->
+                    </select>
+                    <select id="sortOptions" class="form-select filter-select w-auto">
+                        <option value="date_desc">Newest First</option>
+                        <option value="date_asc">Oldest First</option>
+                        <option value="budget_desc">Highest Budget</option>
+                        <option value="name_asc">Name (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Grid -->
+    <div class="row g-4" id="eventsGrid">
+        {% for event in events %}
+        <div class="col-md-6 col-xl-4 event-card-wrapper"
+             data-type="{{ event.event_type }}"
+             data-date="{{ event.event_date|date:'Y-m-d' }}"
+             data-budget="{{ event.budget }}"
+             data-name="{{ event.event_name|lower }}">
+            
+            <div class="event-card h-100 shadow-sm">
+                <!-- Card Header -->
+                <div class="event-card-header d-flex justify-content-between align-items-start">
+                    <div class="pe-2">
+                        <h4 class="card-title-text text-truncate" title="{{ event.event_name }}">{{ event.event_name }}</h4>
+                        <span class="badge badge-soft bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle">
+                            {{ event.event_type }}
+                        </span>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-link text-muted p-0" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item" href="{% url 'events:workspace' event.id %}">Open Workspace</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="event-card-body">
+                    <div class="info-row">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>{{ event.event_date|date:"F d, Y" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <i class="bi bi-geo-alt"></i>
+                        <span class="text-truncate" title="{{ event.location }}">{{ event.location }}</span>
+                    </div>
+                    <div class="info-row">
+                        <i class="bi bi-cash-stack"></i>
+                        <span>${{ event.budget }}</span>
+                    </div>
+                    
+                    <!-- AI & Health Status -->
+                    <div class="status-box">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-muted fw-bold">AI Status</span>
+                            <span class="badge badge-soft bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-robot me-1"></i> Generated
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-muted fw-bold">Health Score</span>
+                            {% if event.budget_summary %}
+                                {% if event.budget_summary.risk_level == 'High' %}
+                                    <span class="small fw-bold text-danger"><i class="bi bi-exclamation-circle-fill me-1"></i> Needs Attention</span>
+                                {% elif event.budget_summary.risk_level == 'Medium' %}
+                                    <span class="small fw-bold text-warning"><i class="bi bi-exclamation-triangle-fill me-1"></i> On Track</span>
+                                {% else %}
+                                    <span class="small fw-bold text-success"><i class="bi bi-check-circle-fill me-1"></i> Excellent</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="small fw-bold text-success"><i class="bi bi-check-circle-fill me-1"></i> Excellent</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="event-card-footer d-flex justify-content-between align-items-center">
+                    <span class="small text-muted"><i class="bi bi-list-check me-1"></i> {{ event.timeline.count }} Tasks</span>
+                    <a href="{% url 'events:workspace' event.id %}" class="btn btn-workspace shadow-sm">
+                        Open Workspace <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm p-5 text-center bg-white rounded-4">
+                <div class="display-1 text-primary opacity-25 mb-3"><i class="bi bi-calendar-x"></i></div>
+                <h4 class="fw-bold mb-3">No Events Found</h4>
+                <p class="text-muted mb-4">No events found matching your search.</p>
+                <a href="{% url 'ai_engine:create_event_ai' %}" class="btn btn-create d-inline-flex mx-auto w-auto">
+                    <i class="bi bi-stars me-2"></i> Generate Your First Event
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Dynamic Logic (No Backend Changes) -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. KPI Calculation Logic
+        const eventData = document.querySelectorAll('.kpi-event');
+        let upcoming = 0;
+        let totalBudget = 0;
+
+        eventData.forEach(el => {
+            upcoming += parseInt(el.dataset.upcoming);
+            totalBudget += parseFloat(el.dataset.budget || 0);
+        });
+
+        const pendingTasks = document.querySelectorAll('.kpi-task-pending').length;
+
+        // Animate numbers (simple implementation)
+        document.getElementById('kpi-total').textContent = eventData.length;
+        document.getElementById('kpi-upcoming').textContent = upcoming;
+        document.getElementById('kpi-budget').textContent = '$' + totalBudget.toLocaleString();
+        document.getElementById('kpi-tasks').textContent = pendingTasks;
+
+        // 2. Sorting and Filtering Logic
+        const grid = document.getElementById('eventsGrid');
+        let cards = Array.from(grid.querySelectorAll('.event-card-wrapper'));
+        const typeFilter = document.getElementById('typeFilter');
+        const sortOptions = document.getElementById('sortOptions');
+
+        // Populate Type Filter dynamically
+        const types = new Set();
+        cards.forEach(card => types.add(card.dataset.type));
+        types.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            typeFilter.appendChild(option);
+        });
+
+        function applyFilters() {
+            const type = typeFilter.value;
+            const sort = sortOptions.value;
+
+            // Filter
+            cards.forEach(card => {
+                if (type === 'All' || card.dataset.type === type) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Sort visible cards
+            let visibleCards = cards.filter(c => c.style.display !== 'none');
+            visibleCards.sort((a, b) => {
+                if (sort === 'date_asc') return new Date(a.dataset.date) - new Date(b.dataset.date);
+                if (sort === 'date_desc') return new Date(b.dataset.date) - new Date(a.dataset.date);
+                if (sort === 'budget_desc') return parseFloat(b.dataset.budget) - parseFloat(a.dataset.budget);
+                if (sort === 'name_asc') return a.dataset.name.localeCompare(b.dataset.name);
+            });
+
+            // Re-append in sorted order
+            visibleCards.forEach(card => grid.appendChild(card));
+        }
+
+        typeFilter.addEventListener('change', applyFilters);
+        sortOptions.addEventListener('change', applyFilters);
+    });
+</script>
+{% endblock %}

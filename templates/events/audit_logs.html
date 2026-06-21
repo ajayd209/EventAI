@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static dashboard_extras %}
+
+{% block title %}Audit Logs - {{ event.event_name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Breadcrumb & Header -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:my_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'events:workspace' event.id %}">{{ event.event_name }} Workspace</a></li>
+            <li class="breadcrumb-item active">Audit Logs</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi bi-journal-text me-2 text-primary"></i> System Audit Logs</h2>
+        
+        <!-- Filter Controls -->
+        <div class="btn-group" role="group">
+            <a href="?filter=all" class="btn btn-outline-primary {% if current_filter == 'all' %}active{% endif %}">All</a>
+            <a href="?filter=event" class="btn btn-outline-primary {% if current_filter == 'event' %}active{% endif %}">Event</a>
+            <a href="?filter=task" class="btn btn-outline-primary {% if current_filter == 'task' %}active{% endif %}">Tasks</a>
+            <a href="?filter=marketing" class="btn btn-outline-primary {% if current_filter == 'marketing' %}active{% endif %}">Marketing</a>
+            <a href="?filter=module" class="btn btn-outline-primary {% if current_filter == 'module' %}active{% endif %}">Modules</a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="border-0 px-4 py-3">Timestamp</th>
+                        <th class="border-0 py-3">User</th>
+                        <th class="border-0 py-3">Action Description</th>
+                        <th class="border-0 px-4 py-3 text-end">Record ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td class="px-4 text-muted small"><i class="bi bi-clock me-1"></i> {{ log.timestamp|date:"M d, Y H:i:s" }}</td>
+                        <td class="fw-bold small">{% if log.user %}{{ log.user.username }}{% else %}<span class="text-muted">System</span>{% endif %}</td>
+                        <td>
+                            {% if 'Updated task' in log.action %}
+                                <span class="badge bg-info text-dark me-2">Task</span>
+                            {% elif 'Regenerated' in log.action %}
+                                <span class="badge bg-danger me-2">Marketing</span>
+                            {% elif 'Event Created' in log.action %}
+                                <span class="badge bg-success me-2">Core</span>
+                            {% elif 'Added entry' in log.action %}
+                                <span class="badge bg-primary me-2">Module</span>
+                            {% endif %}
+                            {{ log.action }}
+                        </td>
+                        <td class="text-end px-4 text-muted small">#{{ log.id }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-3"></i>
+                            No audit logs found for this filter.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if logs.has_other_pages %}
+        <div class="card-footer bg-white border-top-0 py-3">
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    {% if logs.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?filter={{ current_filter }}&page={{ logs.previous_page_number }}">&laquo; Prev</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo; Prev</span></li>
+                    {% endif %}
+                    
+                    {% for i in logs.paginator.page_range %}
+                        {% if logs.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="?filter={{ current_filter }}&page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if logs.has_next %}
+                    <li class="page-item"><a class="page-link" href="?filter={{ current_filter }}&page={{ logs.next_page_number }}">Next &raquo;</a></li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .page-link { color: #0d6efd; }
+    .page-item.active .page-link { background-color: #0d6efd; border-color: #0d6efd; }
+</style>
+{% endblock %}

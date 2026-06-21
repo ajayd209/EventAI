@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static event_filters %}
+
+{% block title %}Event Plan History - EventAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #fafafa;
+        font-family: 'Inter', sans-serif;
+    }
+    .page-header {
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .page-header h1 {
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+    .plan-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .plan-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    }
+    .card-body {
+        padding: 1.5rem;
+        flex: 1;
+    }
+    .card-title {
+        font-weight: 600;
+        color: #0f172a;
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+    .card-date {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-bottom: 1rem;
+    }
+    .prompt-preview {
+        font-size: 0.9rem;
+        color: #475569;
+        margin-bottom: 1.5rem;
+        background: #f8fafc;
+        padding: 0.75rem;
+        border-radius: 6px;
+        border-left: 3px solid #6366f1;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    .meta-item {
+        font-size: 0.85rem;
+        color: #334155;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .meta-item i {
+        color: #6366f1;
+    }
+    .card-footer {
+        background: transparent;
+        border-top: 1px solid #f1f5f9;
+        padding: 1rem 1.5rem;
+        text-align: right;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container pb-5">
+    <div class="page-header flex-wrap gap-3">
+        <h1><i class="bi bi-clock-history text-primary"></i> Plan History</h1>
+        <div class="d-flex gap-2 ms-auto">
+            <form method="GET" action="{% url 'event_planner:plan_history' %}" class="d-flex gap-2">
+                <input type="text" name="search" class="form-control" placeholder="Search events..." value="{{ search_query }}">
+                <select name="sort" class="form-select" onchange="this.form.submit()">
+                    <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                    <option value="budget_desc" {% if sort_by == 'budget_desc' %}selected{% endif %}>Budget (High to Low)</option>
+                    <option value="budget_asc" {% if sort_by == 'budget_asc' %}selected{% endif %}>Budget (Low to High)</option>
+                    <option value="attendees_desc" {% if sort_by == 'attendees_desc' %}selected{% endif %}>Attendees (High to Low)</option>
+                    <option value="attendees_asc" {% if sort_by == 'attendees_asc' %}selected{% endif %}>Attendees (Low to High)</option>
+                </select>
+                <button type="submit" class="btn btn-outline-secondary d-none">Search</button>
+            </form>
+            <a href="{% url 'event_planner:planner_home' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New Plan</a>
+        </div>
+    </div>
+
+    {% if page_obj %}
+        <div class="row g-4">
+            {% for plan in page_obj %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="plan-card">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ plan.event_name|default:"Untitled Event" }}</h3>
+                            <div class="card-date"><i class="bi bi-calendar3"></i> {{ plan.created_at|date:"M d, Y, h:i A" }}</div>
+                            
+                            <div class="prompt-preview">
+                                {{ plan.prompt }}
+                            </div>
+                            
+                            <div class="meta-grid">
+                                <div class="meta-item">
+                                    <i class="bi bi-geo-alt"></i> 
+                                    {% if plan.generated_plan_json.location %}
+                                        {{ plan.generated_plan_json.location }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </div>
+                                <div class="meta-item">
+                                    <i class="bi bi-people"></i> 
+                                    {% if plan.generated_plan_json.attendees %}
+                                        {{ plan.generated_plan_json.attendees }} Attendees
+                                    {% else %}
+                                        0 Attendees
+                                    {% endif %}
+                                </div>
+                                <div class="meta-item" style="grid-column: span 2;">
+                                    <i class="bi bi-currency-rupee"></i> Budget: 
+                                    {% if plan.generated_plan_json.budget %}
+                                        {{ plan.generated_plan_json.budget|indian_number }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'event_planner:plan_detail' plan.pk %}" class="btn btn-outline-primary btn-sm w-100">View Plan</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <nav class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
+
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-folder2-open text-muted" style="font-size: 4rem;"></i>
+            <h3 class="mt-3 text-muted">No plans found</h3>
+            <p class="text-muted">You haven't generated any event plans yet.</p>
+            <a href="{% url 'event_planner:planner_home' %}" class="btn btn-primary mt-3">Generate Your First Plan</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

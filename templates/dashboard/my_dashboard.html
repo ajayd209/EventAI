@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard - EventAI{% endblock %}
+{% block content %}
+<div class="container">
+    <h3 class="fw-bold mb-4">Hello, {{ request.user.first_name|default:request.user.username }}!</h3>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 border-start border-primary border-4 text-center">
+                <div class="small text-muted mb-1">Total Events</div>
+                <h4 class="fw-bold mb-0 text-primary">{{ total_events }}</h4>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 border-start border-success border-4 text-center">
+                <div class="small text-muted mb-1">Upcoming Events</div>
+                <h4 class="fw-bold mb-0 text-success">{{ upcoming_events }}</h4>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 border-start border-info border-4 text-center">
+                <div class="small text-muted mb-1">Pending Tasks</div>
+                <h4 class="fw-bold mb-0 text-info">{{ pending_tasks }}</h4>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3 border-start border-warning border-4 text-center">
+                <div class="small text-muted mb-1">Total Budget Managed</div>
+                <h4 class="fw-bold mb-0 text-warning">${{ total_budget }}</h4>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="fw-bold mb-3">Recent Events</h5>
+    <div class="row g-4">
+        {% for event in recent_events %}
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 p-3">
+                <h6 class="fw-bold">{{ event.event_name }}</h6>
+                <p class="small text-muted mb-3">{{ event.event_date }} | {{ event.location }}</p>
+                <a href="{% url 'events:workspace' event.id %}" class="btn btn-sm btn-outline-primary mt-auto">Open Workspace</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">You haven't created any events yet.</p>
+            <a href="{% url 'ai_engine:create_event_ai' %}" class="btn btn-primary">Create Event with AI</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

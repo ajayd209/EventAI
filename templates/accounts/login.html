@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static socialaccount %}
+
+{% block title %}Login - EventAI{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container auth-wrapper">
+    <div class="auth-container">
+        <!-- Left Panel: Branding & AI Visuals -->
+        <div class="auth-left">
+            <div>
+                <h2 class="fw-bold mb-2">Welcome Back!</h2>
+                <p class="opacity-75">Sign in to continue planning and managing amazing events with the power of AI.</p>
+                
+                <!-- Floating Dashboard Illustration -->
+                <div class="floating-ui">
+                    <i class="bi bi-robot float-icon"></i>
+                    
+                    <!-- Analytics Card -->
+                    <div class="float-card float-card-1">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="ui-circle"></div>
+                            <div class="w-100">
+                                <div class="ui-line long"></div>
+                                <div class="ui-line short"></div>
+                            </div>
+                        </div>
+                        <div class="ui-line medium"></div>
+                    </div>
+
+                    <!-- Progress Chart Card -->
+                    <div class="float-card float-card-2">
+                        <div class="d-flex justify-content-between align-items-end" style="height: 60px;">
+                            <div style="width: 15%; background: rgba(255,255,255,0.4); height: 40%; border-radius: 4px;"></div>
+                            <div style="width: 15%; background: rgba(255,255,255,0.6); height: 70%; border-radius: 4px;"></div>
+                            <div style="width: 15%; background: rgba(255,255,255,0.8); height: 100%; border-radius: 4px;"></div>
+                            <div style="width: 15%; background: rgba(255,255,255,0.5); height: 60%; border-radius: 4px;"></div>
+                            <div style="width: 15%; background: rgba(255,255,255,0.9); height: 90%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Task List Card -->
+                    <div class="float-card float-card-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.5); border-radius: 4px; margin-right: 10px;"></div>
+                            <div class="ui-line long mb-0"></div>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div style="width: 16px; height: 16px; background: rgba(255,255,255,0.8); border-radius: 4px; margin-right: 10px;"></div>
+                            <div class="ui-line medium mb-0"></div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.5); border-radius: 4px; margin-right: 10px;"></div>
+                            <div class="ui-line short mb-0"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Bottom Section -->
+            <div class="auth-features">
+                <div class="auth-feature">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                    <h6>AI Powered</h6>
+                    <p>Generate complete event workspaces with AI.</p>
+                </div>
+                <div class="auth-feature">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <h6>Secure</h6>
+                    <p>Manage events, budgets, and tasks securely.</p>
+                </div>
+                <div class="auth-feature">
+                    <i class="bi bi-clock-history"></i>
+                    <h6>Real-Time</h6>
+                    <p>Track progress and event activities instantly.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Login Form -->
+        <div class="auth-right">
+            <h3 class="auth-form-title">Sign In</h3>
+            <p class="auth-form-subtitle">Enter your credentials to access your account</p>
+
+            {% if form.errors %}
+                <div class="alert alert-danger py-2 small rounded-3">
+                    Invalid username or password. Please try again.
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'accounts:login' %}">
+                {% csrf_token %}
+                
+                <div class="form-group-icon">
+                    <i class="bi bi-person"></i>
+                    <input type="text" name="username" class="form-control" placeholder="Username or Email" required autofocus>
+                </div>
+                
+                <div class="form-group-icon">
+                    <i class="bi bi-lock"></i>
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <label class="form-check-label text-muted small" for="rememberMe">
+                            Remember Me
+                        </label>
+                    </div>
+                    <a href="{% url 'accounts:password_reset' %}" class="text-decoration-none small" style="color: #4f46e5; font-weight: 500;">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+
+            <div class="auth-divider">or continue with</div>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <a href="{% provider_login_url 'google' %}" class="social-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px">
+                            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                        </svg>
+                        Google
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href="{% provider_login_url 'github' %}" class="social-btn">
+                        <i class="bi bi-github fs-5"></i>
+                        GitHub
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <span class="text-muted">Don't have an account?</span> 
+                <a href="{% url 'accounts:register' %}" class="text-decoration-none" style="color: #4f46e5; font-weight: 600;">Register here</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

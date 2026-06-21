@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load dashboard_extras %}
+
+{% block title %}{{ module.module_name }} - {{ event.event_name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Breadcrumb & Header -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'dashboard:my_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'events:workspace' event.id %}">{{ event.event_name }}</a></li>
+            <li class="breadcrumb-item active">{{ module.module_name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Module Form Section -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-3">{{ module.module_name }}</h4>
+                    <p class="text-muted small mb-4">{{ module.description }}</p>
+                    
+                    <hr>
+                    
+                    <h6 class="fw-bold mb-4">Add New Entry</h6>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% for field in module.form_schema %}
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">{{ field.label }}</label>
+                            {% if field.type == 'text' %}
+                            <input type="text" name="{{ field.name }}" class="form-control" required>
+                            {% elif field.type == 'number' %}
+                            <input type="number" name="{{ field.name }}" class="form-control" required>
+                            {% elif field.type == 'date' %}
+                            <input type="date" name="{{ field.name }}" class="form-control" required>
+                            {% else %}
+                            <input type="text" name="{{ field.name }}" class="form-control" required>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <div class="alert alert-warning small">
+                            AI did not suggest specific fields for this module.
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary">Save Entry</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module Data Section -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-0 py-3">
+                    <h6 class="fw-bold mb-0">Recorded Entries ({{ entries.count }})</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    {% for field in module.form_schema %}
+                                    <th class="border-0 small text-uppercase text-muted">{{ field.label }}</th>
+                                    {% endfor %}
+                                    <th class="border-0 small text-uppercase text-muted text-end">Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in entries %}
+                                <tr>
+                                    {% for field in module.form_schema %}
+                                    <td class="small">
+                                        {% with field_name=field.name %}
+                                            {{ entry.data_json|get_item:field_name }}
+                                        {% endwith %}
+                                    </td>
+                                    {% endfor %}
+                                    <td class="text-end small text-muted">
+                                        {{ entry.created_at|date:"M d, H:i" }}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="100%" class="text-center py-5 text-muted small">
+                                        No entries found. Start by adding one!
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

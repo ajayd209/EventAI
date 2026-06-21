@@ -1,0 +1,400 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Event With AI - EventAI Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Premium SaaS Styling */
+    .premium-card {
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        border: 1px solid #f3f4f6;
+        background: #ffffff;
+    }
+    .input-premium {
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.2s ease-in-out;
+    }
+    .input-premium:focus {
+        background-color: #ffffff;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+    }
+    .premium-addon {
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        color: #6b7280;
+        border-radius: 10px 0 0 10px;
+        border-right: none;
+    }
+    .input-grouped {
+        border-radius: 0 10px 10px 0;
+        border-left: none;
+    }
+    .input-premium:focus + .premium-addon {
+        border-color: #0d6efd;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .form-label i {
+        color: #6b7280;
+        font-size: 1rem;
+    }
+    .form-hint {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-top: 0.25rem;
+        display: block;
+    }
+    
+    /* Workspace Preview Enhancements */
+    .preview-card {
+        transition: all 0.3s ease;
+        background: #ffffff;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #f3f4f6;
+    }
+    .preview-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        border-color: #e5e7eb;
+    }
+    .preview-badge {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 700;
+    }
+    
+    /* AI Branding */
+    .ai-gradient-text {
+        background: linear-gradient(135deg, #0d6efd, #6f42c1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
+    }
+    .ai-badge {
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .workflow-tracker {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* Scanning Animation for Loading State */
+    @keyframes scan {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(200%); }
+    }
+    .scanning::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 50%;
+        background: linear-gradient(to bottom, transparent, rgba(13, 110, 253, 0.1) 50%, transparent);
+        animation: scan 1.5s linear infinite;
+        z-index: 10;
+        pointer-events: none;
+    }
+    
+    /* Generate Button */
+    .btn-generate {
+        background: linear-gradient(135deg, #0d6efd, #6f42c1);
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 0.8rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-generate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3);
+        color: white;
+    }
+    .loading-status-text {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #4b5563;
+        margin-top: 1rem;
+        display: none;
+        text-align: center;
+    }
+    .example-events {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+    }
+    .example-events span {
+        cursor: pointer;
+        color: #0d6efd;
+        transition: color 0.2s;
+    }
+    .example-events span:hover {
+        color: #6f42c1;
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            <!-- Header Section -->
+            <div class="text-center mb-5">
+                <h1 class="fw-bold mb-3">🚀 Create Event With <span class="ai-gradient-text">AI</span></h1>
+                <p class="text-muted fs-5 mb-4">Our AI will architect a complete enterprise-grade workspace in seconds.</p>
+                
+                <!-- AI Capability Badges -->
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <span class="badge rounded-pill bg-white text-dark border ai-badge">
+                        <i class="bi bi-cpu text-primary me-1"></i> AI Event Analysis
+                    </span>
+                    <span class="badge rounded-pill bg-white text-dark border ai-badge">
+                        <i class="bi bi-grid text-primary me-1"></i> Dynamic Modules
+                    </span>
+                    <span class="badge rounded-pill bg-white text-dark border ai-badge">
+                        <i class="bi bi-graph-up text-success me-1"></i> Budget Planning
+                    </span>
+                    <span class="badge rounded-pill bg-white text-dark border ai-badge">
+                        <i class="bi bi-calendar-range text-info me-1"></i> Timeline Creation
+                    </span>
+                    <span class="badge rounded-pill bg-white text-dark border ai-badge">
+                        <i class="bi bi-shield-check text-warning me-1"></i> Risk Assessment
+                    </span>
+                    <span class="badge rounded-pill bg-white text-dark border ai-badge">
+                        <i class="bi bi-megaphone text-danger me-1"></i> Marketing Assets
+                    </span>
+                </div>
+            </div>
+
+            <div class="row g-5">
+                <!-- Form Section -->
+                <div class="col-md-5">
+                    <div class="card premium-card p-4 h-100">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-light p-2 rounded-3 me-3 text-primary">
+                                <i class="bi bi-sliders fs-5"></i>
+                            </div>
+                            <h5 class="fw-bold mb-0">Event Parameters</h5>
+                        </div>
+                        
+                        <form method="POST" id="aiEventForm">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-type-h1"></i> Event Name</label>
+                                <input type="text" name="event_name" id="eventNameInput" class="form-control input-premium" placeholder="e.g. Global Tech Summit 2026" required>
+                                <div class="example-events">
+                                    Try: <span onclick="fillEvent('Dahi Handi Festival')">Dahi Handi Festival</span> • <span onclick="fillEvent('Ganesh Utsav')">Ganesh Utsav</span> • <span onclick="fillEvent('Tech Conference')">Tech Conference</span> • <span onclick="fillEvent('Startup Summit')">Startup Summit</span> • <span onclick="fillEvent('College Cultural Fest')">College Cultural Fest</span> • <span onclick="fillEvent('Marathon Event')">Marathon Event</span> • <span onclick="fillEvent('International Expo')">International Expo</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-diagram-3"></i> Event Type</label>
+                                <select name="event_type" class="form-select input-premium" required>
+                                    <option selected disabled value="">Select Type</option>
+                                    <option value="Conference">Conference</option>
+                                    <option value="Workshop">Workshop</option>
+                                    <option value="Concert">Concert</option>
+                                    <option value="Corporate Meeting">Corporate Meeting</option>
+                                    <option value="Festival">Festival</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-geo-alt"></i> Location</label>
+                                <input type="text" name="location" class="form-control input-premium" placeholder="e.g. San Francisco, CA" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-calendar-event"></i> Event Date</label>
+                                <input type="date" name="event_date" class="form-control input-premium" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-people"></i> Expected Crowd</label>
+                                <input type="number" name="expected_crowd" class="form-control input-premium" placeholder="e.g. 500" required>
+                                <span class="form-hint">Approximate expected attendees</span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-cash-stack"></i> Budget</label>
+                                <div class="input-group">
+                                    <span class="input-group-text premium-addon">$</span>
+                                    <input type="number" name="budget" class="form-control input-premium input-grouped" required>
+                                </div>
+                                <span class="form-hint">Total planned event budget</span>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label"><i class="bi bi-trophy"></i> Prize Money</label>
+                                <div class="input-group">
+                                    <span class="input-group-text premium-addon">$</span>
+                                    <input type="number" name="prize_money" class="form-control input-premium input-grouped">
+                                </div>
+                                <span class="form-hint">Optional</span>
+                            </div>
+                            
+                            <div class="d-grid mt-auto pt-4 border-top">
+                                <button type="submit" id="generateBtn" class="btn btn-primary btn-lg btn-generate">
+                                    <i class="bi bi-stars me-2"></i>Generate Workspace
+                                </button>
+                                <div id="loadingStatusText" class="loading-status-text">
+                                    <span id="dynamicStatus">Initializing AI Engine...</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="col-md-7">
+                    <div class="ps-md-2 d-flex flex-column h-100">
+                        <!-- AI Workflow Visual -->
+                        <div class="d-flex align-items-center mb-4 text-muted text-uppercase workflow-tracker bg-white p-3 rounded-3 border">
+                            <span class="text-primary"><i class="bi bi-1-circle-fill me-1"></i> Input</span>
+                            <i class="bi bi-arrow-right mx-2 opacity-50"></i>
+                            <span class="opacity-50" id="step-ai"><i class="bi bi-2-circle me-1"></i> AI Analysis</span>
+                            <i class="bi bi-arrow-right mx-2 opacity-50"></i>
+                            <span class="opacity-50" id="step-workspace"><i class="bi bi-3-circle me-1"></i> Workspace Gen</span>
+                            <i class="bi bi-arrow-right mx-2 opacity-50"></i>
+                            <span class="opacity-50" id="step-manage"><i class="bi bi-4-circle me-1"></i> Management</span>
+                        </div>
+                        
+                        <h5 class="fw-bold mb-3">AI Generated Modules Preview</h5>
+                        <p class="text-muted small mb-4">A preview of the dynamic data modules our AI builds to match your specific event type.</p>
+                        
+                        <div class="row g-3 flex-grow-1" id="preview-cards-container">
+                            <div class="col-sm-6">
+                                <div class="card preview-card h-100 p-3 border-start border-primary border-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="fw-bold mb-0">Registration Module</h6>
+                                        <i class="bi bi-card-checklist text-primary opacity-50"></i>
+                                    </div>
+                                    <p class="small text-muted mb-3">Automated ticketing and attendee tracking.</p>
+                                    <div class="mt-auto"><span class="bg-primary bg-opacity-10 text-primary preview-badge">AI Generated</span></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card preview-card h-100 p-3 border-start border-success border-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="fw-bold mb-0">Volunteer Management</h6>
+                                        <i class="bi bi-person-badge text-success opacity-50"></i>
+                                    </div>
+                                    <p class="small text-muted mb-3">Role assignment and shift scheduling.</p>
+                                    <div class="mt-auto"><span class="bg-success bg-opacity-10 text-success preview-badge">Auto Configured</span></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card preview-card h-100 p-3 border-start border-warning border-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="fw-bold mb-0">Sponsor Management</h6>
+                                        <i class="bi bi-building text-warning opacity-50"></i>
+                                    </div>
+                                    <p class="small text-muted mb-3">Tier tracking and benefit delivery.</p>
+                                    <div class="mt-auto"><span class="bg-warning bg-opacity-10 text-warning preview-badge">Ready to Use</span></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card preview-card h-100 p-3 border-start border-danger border-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="fw-bold mb-0">Safety Checklist</h6>
+                                        <i class="bi bi-shield-exclamation text-danger opacity-50"></i>
+                                    </div>
+                                    <p class="small text-muted mb-3">AI-suggested risk mitigation steps.</p>
+                                    <div class="mt-auto"><span class="bg-danger bg-opacity-10 text-danger preview-badge">AI Generated</span></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="card preview-card p-3 border-start border-info border-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="fw-bold mb-0">Financial Budget Planner</h6>
+                                        <i class="bi bi-graph-up-arrow text-info opacity-50"></i>
+                                    </div>
+                                    <p class="small text-muted mb-3">Dynamic cost allocation based on crowd size and type.</p>
+                                    <div><span class="bg-info bg-opacity-10 text-info preview-badge">Auto Configured</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading State JavaScript -->
+<script>
+    function fillEvent(name) {
+        document.getElementById('eventNameInput').value = name;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('aiEventForm');
+        const btn = document.getElementById('generateBtn');
+        const stepAi = document.getElementById('step-ai');
+        const stepWorkspace = document.getElementById('step-workspace');
+        const previewCards = document.querySelectorAll('.preview-card');
+        const loadingStatusText = document.getElementById('loadingStatusText');
+        const dynamicStatus = document.getElementById('dynamicStatus');
+
+        const statuses = [
+            "🧠 Analyzing Event Requirements...",
+            "⚡ Generating Modules...",
+            "📊 Creating Budget Plan...",
+            "📅 Building Timeline...",
+            "📣 Generating Marketing Assets...",
+            "🚀 Finalizing Workspace..."
+        ];
+
+        form.addEventListener('submit', function() {
+            // Update Button
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing...';
+            btn.classList.add('disabled');
+            
+            // Show Status Text
+            loadingStatusText.style.display = 'block';
+            
+            // Update Workflow Tracker
+            stepAi.classList.remove('opacity-50');
+            stepAi.classList.add('text-primary');
+            stepAi.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" style="width: 12px; height: 12px;"></span> Analyzing';
+            
+            setTimeout(() => {
+                stepAi.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Analysis Complete';
+                stepWorkspace.classList.remove('opacity-50');
+                stepWorkspace.classList.add('text-primary');
+                stepWorkspace.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true" style="width: 12px; height: 12px;"></span> Generating';
+            }, 3000);
+            
+            // Add Scanning Animation to Preview Cards
+            previewCards.forEach(card => {
+                card.classList.add('scanning');
+            });
+
+            // Cycle through status messages
+            let i = 0;
+            setInterval(() => {
+                if (i < statuses.length) {
+                    dynamicStatus.innerText = statuses[i];
+                    i++;
+                }
+            }, 2500); // Change text every 2.5 seconds (expected generation time is ~10-15s)
+        });
+    });
+</script>
+{% endblock %}

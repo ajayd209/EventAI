@@ -1,0 +1,466 @@
+{% extends 'base.html' %}
+{% load static event_filters %}
+
+{% block title %}{{ plan.event_name|default:"Event Plan" }} - EventAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Most styles copied from home.html */
+    body {
+        background-color: #fafafa;
+        font-family: 'Inter', sans-serif;
+    }
+    .card-custom {
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        padding: 2rem;
+    }
+    .page-header {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    .icon-box-green {
+        background-color: #f0fdf4;
+        color: #22c55e;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+    .plan-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .event-title-main {
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: #0f172a;
+        margin-bottom: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .icon-circle-green {
+        background-color: #f0fdf4;
+        color: #22c55e;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+    .event-meta {
+        color: #64748b;
+        font-size: 0.85rem;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .event-meta i {
+        font-size: 0.8rem;
+        margin-right: 0.2rem;
+        color: #94a3b8;
+    }
+    .event-meta .separator {
+        color: #cbd5e1;
+        font-size: 1.2rem;
+        line-height: 1;
+    }
+    
+    .grid-3 {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr 1.2fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #f1f5f9;
+    }
+    .col-title {
+        font-weight: 600;
+        color: #6366f1;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    /* Schedule */
+    .schedule-item {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.85rem;
+        font-size: 0.85rem;
+        align-items: flex-start;
+    }
+    .schedule-time {
+        background-color: #eef2ff;
+        color: #4f46e5;
+        font-weight: 600;
+        min-width: 75px;
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        text-align: center;
+    }
+    .schedule-activity {
+        color: #334155;
+    }
+    
+    /* Resources */
+    .resource-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.85rem;
+        font-size: 0.85rem;
+        align-items: center;
+    }
+    .resource-name {
+        color: #334155;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .resource-name::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #10b981;
+    }
+    .resource-qty {
+        background-color: #f0fdf4;
+        color: #10b981;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        min-width: 28px;
+        text-align: center;
+    }
+    
+    /* Budget */
+    .budget-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.85rem;
+        font-size: 0.85rem;
+    }
+    .budget-name {
+        color: #334155;
+    }
+    .budget-amt {
+        color: #1e293b;
+        font-weight: 500;
+    }
+    .budget-total {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #f1f5f9;
+        font-weight: 600;
+        color: #6366f1;
+        font-size: 0.9rem;
+    }
+    
+    /* Bottom Grid */
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #f1f5f9;
+    }
+    
+    /* Tasks */
+    .task-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        margin-bottom: 0.85rem;
+        font-size: 0.85rem;
+        color: #334155;
+    }
+    .task-item input[type="checkbox"] {
+        margin-top: 0.15rem;
+        width: 1.1em;
+        height: 1.1em;
+        accent-color: #6366f1;
+    }
+    
+    /* Risks */
+    .risk-title {
+        color: #f59e0b;
+    }
+    .risk-item {
+        font-size: 0.85rem;
+        color: #334155;
+        margin-bottom: 0.85rem;
+        padding-left: 1rem;
+        position: relative;
+    }
+    .risk-item::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #64748b;
+    }
+    
+    /* Recommendation */
+    .recommendation-banner {
+        background-color: #f0fdf4;
+        border-radius: 8px;
+        padding: 0.85rem 1.25rem;
+        margin-top: 2rem;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        color: #166534;
+        font-size: 0.85rem;
+    }
+    
+    /* Prompt Info */
+    .prompt-box {
+        background-color: #f8fafc;
+        border-left: 4px solid #cbd5e1;
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+        color: #475569;
+    }
+    .prompt-box strong {
+        display: block;
+        margin-bottom: 0.4rem;
+        color: #1e293b;
+    }
+    
+    /* Progress */
+    .progress {
+        height: 8px;
+        margin-top: 0.5rem;
+        background-color: #e2e8f0;
+        border-radius: 4px;
+        box-shadow: none;
+    }
+    .progress-bar {
+        background-color: #10b981;
+        transition: width 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+        .grid-3, .grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container pb-5">
+    <div class="page-header">
+        <a href="{% url 'event_planner:plan_history' %}" class="btn btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Back to History</a>
+    </div>
+
+    <div class="card-custom">
+        <div class="plan-header flex-column flex-md-row align-items-start align-items-md-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <div class="icon-box-green">
+                    <i class="bi bi-diagram-3"></i>
+                </div>
+                <div class="fs-5 fw-semibold mb-0">Event Plan Details</div>
+            </div>
+            <div class="text-muted small">
+                Generated on: {{ plan.created_at|date:"M d, Y, h:i A" }}
+            </div>
+        </div>
+
+        <div class="prompt-box">
+            <strong>Original Prompt:</strong>
+            {{ plan.prompt }}
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <div class="icon-circle-green">
+                <i class="bi bi-calendar-event"></i>
+            </div>
+            <div>
+                <div class="event-title-main">
+                    <span>{{ plan.event_name|default:"Untitled Event" }}</span>
+                    {% if plan.status == 'PUBLISHED' %}
+                    <span class="badge bg-success text-white ms-2" style="font-size: 0.6em; vertical-align: middle;">🟢 Published</span>
+                    {% elif plan.status == 'DRAFT' %}
+                    <span class="badge bg-warning text-dark ms-2" style="font-size: 0.6em; vertical-align: middle;">🟡 Draft</span>
+                    {% endif %}
+                </div>
+                <div class="text-muted small mb-2">Last Updated: {{ plan.updated_at|date:"M d, Y h:i A" }}</div>
+                <div class="event-meta">
+                    <span><i class="bi bi-clock"></i><span>{{ json_data.duration|default:"-" }}</span></span>
+                    <span class="separator">•</span>
+                    <span><i class="bi bi-geo-alt"></i><span>{{ json_data.location|default:"-" }}</span></span>
+                    <span class="separator">•</span>
+                    <span><i class="bi bi-people"></i>~<span>{{ json_data.attendees|default:"0" }}</span> People</span>
+                    <span class="separator">•</span>
+                    <span><i class="bi bi-currency-rupee"></i>Budget: <span>{{ json_data.budget|indian_number|default:"0" }}</span></span>
+                </div>
+            </div>
+        </div>
+        
+        <p class="mt-4 text-secondary">{{ json_data.overview }}</p>
+
+        <div class="grid-3">
+            <!-- Schedule -->
+            <div>
+                <div class="col-title"><i class="bi bi-calendar-range"></i> Event Schedule</div>
+                <div>
+                    {% for item in json_data.schedule %}
+                    <div class="schedule-item">
+                        <div class="schedule-time">{{ item.time }}</div>
+                        <div class="schedule-activity">{{ item.activity }}</div>
+                    </div>
+                    {% empty %}
+                    <span class="text-muted small">No schedule provided</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Resources -->
+            <div>
+                <div class="col-title"><i class="bi bi-people"></i> Required Resources</div>
+                <div>
+                    {% for item in json_data.resources %}
+                    <div class="resource-item">
+                        <div class="resource-name">{{ item.item }}</div>
+                        <div class="resource-qty">{{ item.quantity }}</div>
+                    </div>
+                    {% empty %}
+                    <span class="text-muted small">No additional resources required.</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Budget -->
+            <div>
+                <div class="col-title"><i class="bi bi-currency-rupee"></i> Budget Breakdown</div>
+                <div>
+                    {% for item in json_data.budget_breakdown %}
+                    <div class="budget-item">
+                        <div class="budget-name">{{ item.category }}</div>
+                        <div class="budget-amt">₹{{ item.amount|indian_number }}</div>
+                    </div>
+                    {% empty %}
+                    <span class="text-muted small">No budget breakdown provided</span>
+                    {% endfor %}
+                </div>
+                <div class="budget-total">
+                    <span>Total Budget</span>
+                    <span>₹{{ json_data.budget|indian_number|default:"0" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <!-- Tasks -->
+            <div>
+                <div class="d-flex justify-content-between align-items-end mb-2">
+                    <div class="col-title text-success mb-0"><i class="bi bi-check2-all"></i> Task Checklist</div>
+                    <div class="text-muted small fw-medium">Tasks Completed: <span id="completedCount">0</span> / <span id="totalCount">{{ json_data.tasks|length }}</span> (<span id="percentCount">0</span>%)</div>
+                </div>
+                <div class="progress mb-3">
+                    <div class="progress-bar" id="taskProgress" role="progressbar" style="width: 0%"></div>
+                </div>
+                <div>
+                    {% for item in json_data.tasks %}
+                    <div class="task-item">
+                        <input type="checkbox" class="task-checkbox" data-index="{{ forloop.counter0 }}" {% if item.completed %}checked{% endif %}> 
+                        <label>{{ item.task }}</label>
+                    </div>
+                    {% empty %}
+                    <span class="text-muted small">No tasks provided</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Risks -->
+            <div>
+                <div class="col-title risk-title"><i class="bi bi-exclamation-triangle"></i> Risks & Recommendations</div>
+                <div>
+                    {% for item in json_data.risks %}
+                    <div class="risk-item">{{ item }}</div>
+                    {% empty %}
+                    <span class="text-muted small">AI found no major risks.</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% if json_data.recommendations %}
+        <div class="recommendation-banner">
+            <i class="bi bi-star"></i> 
+            <span><strong>AI Recommendation:</strong> <span>{{ json_data.recommendations }}</span></span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const planId = '{{ plan.pk }}';
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+        const completedCountEl = document.getElementById('completedCount');
+        const percentCountEl = document.getElementById('percentCount');
+        const progressBar = document.getElementById('taskProgress');
+        
+        function updateProgress() {
+            if (!checkboxes.length) return;
+            const total = checkboxes.length;
+            const completed = document.querySelectorAll('.task-checkbox:checked').length;
+            const percent = Math.round((completed / total) * 100);
+            
+            completedCountEl.textContent = completed;
+            percentCountEl.textContent = percent;
+            progressBar.style.width = percent + '%';
+        }
+        
+        // Initial call
+        updateProgress();
+        
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', function() {
+                updateProgress();
+                
+                // Save to backend
+                fetch(`/planner/history/${planId}/toggle_task/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        task_index: parseInt(this.getAttribute('data-index')),
+                        completed: this.checked
+                    })
+                }).catch(err => console.error('Error saving task state:', err));
+            });
+        });
+    });
+</script>
+{% endblock %}
