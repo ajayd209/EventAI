@@ -15,7 +15,7 @@ def register(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             UserProfile.objects.create(user=user)
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, "Registration successful! Welcome to EventAI.")
             return redirect('dashboard:my_dashboard')
     else:

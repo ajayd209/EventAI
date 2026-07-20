@@ -72,12 +72,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link px-3" href="{% url 'dashboard:my_dashboard' %}">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
+                        </li> -->
+                        <!-- <li class="nav-item">
                             <a class="nav-link px-3" href="{% url 'dashboard:my_events' %}">My Events</a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
                                 {% csrf_token %}
@@ -88,12 +88,12 @@
                         <li class="nav-item">
                             <a class="nav-link px-3" href="{% url 'dashboard:home' %}">Home</a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link px-3" href="#">Features</a>
-                        </li>
-                        <li class="nav-item">
+                        </li> -->
+                        <!-- <li class="nav-item">
                             <a class="nav-link px-3" href="#">Pricing</a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link px-3" href="{% url 'accounts:login' %}">Login</a>
                         </li>
@@ -107,16 +107,16 @@
                     <li class="nav-item ms-lg-2">
                         <a class="nav-link px-3 fw-medium text-dark" href="{% url 'event_planner:plan_history' %}">My Plans</a>
                     </li>
-                    <li class="nav-item ms-lg-3">
+                    <!-- <li class="nav-item ms-lg-3">
                         <a class="nav-link nav-link-pro" href="{% url 'ai_engine:create_event_ai' %}">🚀 Pro</a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="py-5">
+    <main>
         <div class="container">
             {% if messages %}
                 {% for message in messages %}

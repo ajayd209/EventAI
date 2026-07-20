@@ -1,18 +1,819 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Home - EventAI{% endblock %}
+{% block title %}EventAI — Community & Society Event Management System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container text-center">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <h1 class="display-4 fw-bold mb-4">Plan Your Perfect Event with <span class="text-primary">AI</span></h1>
-            <p class="lead mb-5 text-muted">The world's most advanced AI-powered event management platform. From local meetups to global conferences, we've got you covered.</p>
-            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-                <a href="{% url 'ai_engine:create_event_ai' %}" class="btn btn-primary btn-lg px-4 gap-3">Get Started</a>
-                <button type="button" class="btn btn-outline-secondary btn-lg px-4">Learn More</button>
-            </div>
+
+<!-- ========================================================
+     SECTION 1 — HERO
+     ======================================================== -->
+<section id="hero">
+  <div class="container position-relative" style="z-index:2;">
+    <div class="row align-items-center g-5">
+
+      <!-- Left: Text -->
+      <div class="col-lg-6">
+        <div class="hero-badge animate-fade-up">
+          <i class="bi bi-stars"></i> AI-Powered Event Management
         </div>
+        <h1 class="hero-title animate-fade-up delay-1">
+          Community &amp; Society<br>
+          <span class="highlight">Event Management</span><br>System
+        </h1>
+        <p class="hero-desc mt-3 mb-4 animate-fade-up delay-2">
+          Plan, organize and manage community events effortlessly with the help of Artificial Intelligence.
+          A complete platform designed for communities, societies, NGOs, colleges, clubs and local organizations.
+        </p>
+        <div class="d-flex flex-wrap gap-3 animate-fade-up delay-3">
+          <a href="{% url 'event_planner:planner_home' %}" class="btn-hero-primary">
+            <i class="bi bi-robot"></i> Start Planning
+          </a>
+          <a href="#features" class="btn-hero-secondary">
+            <i class="bi bi-grid-3x3-gap"></i> Explore Features
+          </a>
+        </div>
+        <div class="mt-4 d-flex align-items-center gap-3 animate-fade-up delay-4">
+          <div class="d-flex">
+            <span class="badge rounded-pill bg-success-soft text-success border border-success border-opacity-25 px-3 py-2 small fw-semibold">
+              <i class="bi bi-shield-check me-1"></i>Secure Platform
+            </span>
+          </div>
+          <div class="d-flex">
+            <span class="badge rounded-pill bg-primary-soft text-primary border border-primary border-opacity-25 px-3 py-2 small fw-semibold">
+              <i class="bi bi-cpu me-1"></i>Gemini AI
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Visual Cards -->
+      <div class="col-lg-6 animate-fade-up delay-2">
+        <div class="hero-visual">
+          <div class="hero-card-grid animate-float">
+            <div class="hero-mini-card">
+              <div class="icon-wrap bg-primary-soft"><i class="bi bi-calendar-event text-primary"></i></div>
+              <div class="card-label">Event Planning</div>
+              <div class="card-val">AI-powered schedules</div>
+            </div>
+            <div class="hero-mini-card">
+              <div class="icon-wrap bg-success-soft"><i class="bi bi-people text-success"></i></div>
+              <div class="card-label">Volunteers</div>
+              <div class="card-val">Manage your team</div>
+            </div>
+            <div class="hero-mini-card">
+              <div class="icon-wrap bg-warning-soft"><i class="bi bi-cash-stack" style="color:#fd7e14"></i></div>
+              <div class="card-label">Budget Tracking</div>
+              <div class="card-val">Smart breakdown</div>
+            </div>
+            <div class="hero-mini-card">
+              <div class="icon-wrap bg-info-soft"><i class="bi bi-robot text-info"></i></div>
+              <div class="card-label">AI Assistant</div>
+              <div class="card-val">24/7 assistance</div>
+            </div>
+            <div class="hero-mini-card">
+              <div class="icon-wrap bg-purple-soft"><i class="bi bi-people-fill text-purple"></i></div>
+              <div class="card-label">Community</div>
+              <div class="card-val">200+ organizations</div>
+            </div>
+            <div class="hero-mini-card">
+              <div class="icon-wrap bg-teal-soft"><i class="bi bi-trophy text-teal"></i></div>
+              <div class="card-label">Celebrations</div>
+              <div class="card-val">Festivals &amp; events</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-</div>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     SECTION 2 — ABOUT PLATFORM
+     ======================================================== -->
+<section id="about">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <span class="section-label">About EventAI</span>
+      <h2 class="section-title mt-2">One Platform for All Your Community Events</h2>
+      <p class="section-subtitle mt-3">
+        Our platform helps community organizers create, plan and manage events in one place.
+        From sports tournaments and blood donation camps to college festivals and cultural programs,
+        EventAI simplifies the entire planning process.
+      </p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="about-feature-card">
+          <div class="about-icon bg-primary-soft">
+            <i class="bi bi-calendar2-check text-primary"></i>
+          </div>
+          <h5 class="fw-700 mb-2" style="font-size:1rem;font-weight:700;">Event Planning</h5>
+          <p class="text-muted small mb-0">Create detailed event plans with timelines, tasks and resource lists — all in minutes with AI assistance.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="about-feature-card">
+          <div class="about-icon bg-success-soft">
+            <i class="bi bi-people text-success"></i>
+          </div>
+          <h5 class="fw-700 mb-2" style="font-size:1rem;font-weight:700;">Volunteer Management</h5>
+          <p class="text-muted small mb-0">Assign roles, plan volunteer requirements and keep your entire team organized and coordinated.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="about-feature-card">
+          <div class="about-icon bg-warning-soft">
+            <i class="bi bi-box-seam text-warning"></i>
+          </div>
+          <h5 class="fw-700 mb-2" style="font-size:1rem;font-weight:700;">Resource Management</h5>
+          <p class="text-muted small mb-0">Track equipment, venue requirements, materials and allocate resources efficiently for every event.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 reveal">
+        <div class="about-feature-card">
+          <div class="about-icon bg-info-soft">
+            <i class="bi bi-robot text-info"></i>
+          </div>
+          <h5 class="fw-700 mb-2" style="font-size:1rem;font-weight:700;">AI Assistance</h5>
+          <p class="text-muted small mb-0">Our Gemini AI generates complete event plans, budgets, checklists and risk analyses automatically.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     SECTION 3 — WHO CAN USE IT
+     ======================================================== -->
+<section id="who-can-use">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <span class="section-label">Built For Everyone</span>
+      <h2 class="section-title mt-2">Who Can Use EventAI?</h2>
+      <p class="section-subtitle mt-3">
+        Designed for any group or organization that needs to plan and manage community events.
+      </p>
+    </div>
+    <div class="row g-3 justify-content-center">
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="user-card">
+          <div class="user-card-icon">🏘️</div>
+          <h6>Resident Welfare Societies</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="user-card">
+          <div class="user-card-icon">🤝</div>
+          <h6>NGOs &amp; Nonprofits</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="user-card">
+          <div class="user-card-icon">🏫</div>
+          <h6>Schools &amp; Colleges</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="user-card">
+          <div class="user-card-icon">⚽</div>
+          <h6>Sports Clubs</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="user-card">
+          <div class="user-card-icon">🏢</div>
+          <h6>Corporate Teams</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="user-card">
+          <div class="user-card-icon">🏛️</div>
+          <h6>Municipal Organizations</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="user-card">
+          <div class="user-card-icon">👥</div>
+          <h6>Community Groups</h6>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="user-card">
+          <div class="user-card-icon">🎓</div>
+          <h6>Student Organizations</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     SECTION 4 — PLATFORM FEATURES
+     ======================================================== -->
+<section id="features">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <span class="section-label">Platform Features</span>
+      <h2 class="section-title mt-2">Everything You Need to Run Great Events</h2>
+      <p class="section-subtitle mt-3">A complete toolkit for end-to-end event planning and management.</p>
+    </div>
+    <div class="row g-3">
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-primary-soft"><i class="bi bi-calendar-plus text-primary"></i></div>
+          <div class="feature-text">
+            <h6>Event Creation</h6>
+            <p>Define event details, date, venue and type easily.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-info-soft"><i class="bi bi-robot text-info"></i></div>
+          <div class="feature-text">
+            <h6>AI Event Planner</h6>
+            <p>Gemini AI generates complete plans automatically.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-warning-soft"><i class="bi bi-cash-stack" style="color:#fd7e14"></i></div>
+          <div class="feature-text">
+            <h6>Budget Planning</h6>
+            <p>Detailed budget breakdown with category-wise costs.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-success-soft"><i class="bi bi-check2-square text-success"></i></div>
+          <div class="feature-text">
+            <h6>Task Checklist</h6>
+            <p>Track tasks with interactive checkboxes and progress.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-purple-soft"><i class="bi bi-box-seam text-purple"></i></div>
+          <div class="feature-text">
+            <h6>Resource Management</h6>
+            <p>Equipment, venue, volunteers — all in one place.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-danger-soft"><i class="bi bi-shield-exclamation text-danger"></i></div>
+          <div class="feature-text">
+            <h6>Risk Analysis</h6>
+            <p>AI identifies potential risks and mitigation steps.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-teal-soft"><i class="bi bi-journal-text text-teal"></i></div>
+          <div class="feature-text">
+            <h6>Draft Saving</h6>
+            <p>Save your work and continue anytime you want.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-success-soft"><i class="bi bi-send-check text-success"></i></div>
+          <div class="feature-text">
+            <h6>Publish Event</h6>
+            <p>Finalize and publish your event plan when ready.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-primary-soft"><i class="bi bi-folder2-open text-primary"></i></div>
+          <div class="feature-text">
+            <h6>My Plans</h6>
+            <p>Access all your drafts and published plans easily.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-warning-soft"><i class="bi bi-clock-history" style="color:#fd7e14"></i></div>
+          <div class="feature-text">
+            <h6>History Tracking</h6>
+            <p>View full history of all your planned events.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-info-soft"><i class="bi bi-file-earmark-bar-graph text-info"></i></div>
+          <div class="feature-text">
+            <h6>Professional Reports</h6>
+            <p>Structured, presentation-ready event reports.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 col-xl-3 reveal">
+        <div class="feature-item">
+          <div class="feature-icon bg-purple-soft"><i class="bi bi-phone text-purple"></i></div>
+          <div class="feature-text">
+            <h6>Responsive Design</h6>
+            <p>Works perfectly on desktop, tablet and mobile.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     SECTION 5 — HOW IT WORKS
+     ======================================================== -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <span class="section-label">Simple Process</span>
+      <h2 class="section-title mt-2">How It Works</h2>
+      <p class="section-subtitle mt-3">From idea to published event plan in just five simple steps.</p>
+    </div>
+    <div class="steps-wrapper reveal">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h5>Enter Event Details</h5>
+          <p>Provide your event name, type, expected attendance, venue and budget. Takes less than 2 minutes.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h5>AI Generates Complete Plan</h5>
+          <p>Our Gemini AI creates a full event plan including schedule, budget breakdown, resources, tasks and risk analysis.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h5>Review and Edit</h5>
+          <p>Read through the generated plan, make any changes you need, and save it as a draft if you're not ready yet.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h5>Publish Your Event</h5>
+          <p>When you're satisfied with the plan, publish it to finalize and make it part of your event portfolio.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h5>Manage from My Plans</h5>
+          <p>Access all your published and draft plans, track tasks, view history and generate reports anytime.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     SECTION 6 — COMMUNITY EVENT TYPES
+     ======================================================== -->
+<section id="event-types">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <span class="section-label">Event Categories</span>
+      <h2 class="section-title mt-2">What Kind of Events Can You Plan?</h2>
+      <p class="section-subtitle mt-3">EventAI supports a wide variety of community and organizational events.</p>
+    </div>
+    <div class="row g-3">
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🏆</span>
+          <h6>Sports Tournament</h6>
+          <p>Cricket, football, volleyball and any team sport event.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🏥</span>
+          <h6>Medical Camp</h6>
+          <p>Health checkup camps and medical awareness drives.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🩸</span>
+          <h6>Blood Donation Camp</h6>
+          <p>Organizing blood donation drives for communities.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🎉</span>
+          <h6>College Festival</h6>
+          <p>Annual fests, cultural days and college celebrations.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🌳</span>
+          <h6>Tree Plantation</h6>
+          <p>Environmental drives and green community initiatives.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">📢</span>
+          <h6>Awareness Campaign</h6>
+          <p>Social, health and educational awareness programs.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">💻</span>
+          <h6>Hackathon</h6>
+          <p>Tech competitions, coding events and innovation fests.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🎭</span>
+          <h6>Cultural Program</h6>
+          <p>Dance, music, drama and cultural performances.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🏃</span>
+          <h6>Marathon</h6>
+          <p>Fun runs, walkathons and fitness community events.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🛠️</span>
+          <h6>Workshop</h6>
+          <p>Skill-building sessions, training and hands-on workshops.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🎤</span>
+          <h6>Seminar</h6>
+          <p>Educational talks, guest lectures and seminars.</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-3 reveal">
+        <div class="event-type-card">
+          <span class="event-type-icon">🤝</span>
+          <h6>Conference</h6>
+          <p>Multi-speaker conferences and professional summits.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SECTION 7: AI PLANNER SHOWCASE -->
+<section id="ai-showcase">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5 reveal">
+        <span class="section-label">AI Planner</span>
+        <h2 class="section-title mt-2">Let AI Do the Heavy Lifting</h2>
+        <p class="text-muted mt-3 mb-4" style="line-height:1.75;">Enter your event details and our Gemini-powered AI generates a complete, professional event plan in seconds.</p>
+        <ul class="ai-feature-list mb-4">
+          <li><i class="bi bi-check-circle-fill"></i> Automatic Schedule &amp; Timeline</li>
+          <li><i class="bi bi-check-circle-fill"></i> Budget Breakdown by Category</li>
+          <li><i class="bi bi-check-circle-fill"></i> Resource &amp; Volunteer Planning</li>
+          <li><i class="bi bi-check-circle-fill"></i> Interactive Task Checklist</li>
+          <li><i class="bi bi-check-circle-fill"></i> Risk Analysis &amp; Mitigation</li>
+          <li><i class="bi bi-check-circle-fill"></i> Smart Recommendations</li>
+        </ul>
+        <a href="{% url 'event_planner:planner_home' %}" class="btn-hero-primary">
+          <i class="bi bi-robot"></i> Open AI Planner
+        </a>
+      </div>
+      <div class="col-lg-7 reveal">
+        <div class="ai-preview-box">
+          <div class="ai-preview-header">
+            <span class="dot" style="background:#ff5f57;"></span>
+            <span class="dot" style="background:#ffbd2e;"></span>
+            <span class="dot" style="background:#28ca42;"></span>
+            <span class="ms-2 small fw-semibold text-muted">EventAI — AI Planner Output</span>
+          </div>
+          <div class="d-flex align-items-center gap-2 mb-3 p-2 rounded-3" style="background:#f0f6ff;">
+            <i class="bi bi-robot text-primary fs-5"></i>
+            <span class="small fw-semibold text-primary">AI-Generated Event Plan</span>
+            <span class="badge bg-success ms-auto">Published</span>
+          </div>
+          <div class="preview-row"><span class="label">Event Name</span><span class="value">Annual Sports Day 2025</span></div>
+          <div class="preview-row"><span class="label">Event Type</span><span class="value">Sports Tournament</span></div>
+          <div class="preview-row"><span class="label">Expected Attendees</span><span class="value">500 participants</span></div>
+          <div class="preview-row"><span class="label">Total Budget</span><span class="value">₹ 1,50,000</span></div>
+          <div class="preview-row"><span class="label">Tasks Generated</span><span class="value">24 tasks</span></div>
+          <div class="preview-row"><span class="label">Risk Factors Identified</span><span class="value">6 risks</span></div>
+          <div class="preview-row"><span class="label">Volunteers Required</span><span class="value">30 volunteers</span></div>
+          <div class="mt-3 p-3 rounded-3" style="background:#f0fff4;border:1px solid #d1fae5;">
+            <div class="small fw-semibold text-success mb-1"><i class="bi bi-lightbulb-fill me-1"></i>AI Recommendation</div>
+            <p class="small text-muted mb-0">Book venue at least 30 days in advance. Arrange medical staff on standby. Ensure PA system is tested 2 hours before event.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 8: MY PLANS SHOWCASE -->
+<section id="plans-showcase">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7 order-lg-1 order-2 reveal">
+        <div class="plans-preview">
+          <div class="plans-header">
+            <h6><i class="bi bi-folder2-open me-2"></i>My Plans Dashboard</h6>
+            <span class="badge bg-white text-primary">3 Active</span>
+          </div>
+          <div class="p-3" style="background:#f8f9fa;border-bottom:1px solid #e9ecef;">
+            <input class="form-control form-control-sm" type="text" placeholder="Search your plans..." disabled>
+          </div>
+          <div class="plan-row">
+            <div>
+              <div class="plan-name">Annual Sports Day</div>
+              <div class="plan-date">Created Jun 20, 2025</div>
+            </div>
+            <span class="badge rounded-pill" style="background:#d1fae5;color:#065f46;">Published</span>
+          </div>
+          <div class="plan-row">
+            <div>
+              <div class="plan-name">Blood Donation Camp</div>
+              <div class="plan-date">Created Jun 25, 2025</div>
+            </div>
+            <span class="badge rounded-pill" style="background:#fef3c7;color:#92400e;">Draft</span>
+          </div>
+          <div class="plan-row">
+            <div>
+              <div class="plan-name">College Tech Fest 2025</div>
+              <div class="plan-date">Created Jun 28, 2025</div>
+            </div>
+            <span class="badge rounded-pill" style="background:#d1fae5;color:#065f46;">Published</span>
+          </div>
+          <div class="plan-row">
+            <div>
+              <div class="plan-name">Tree Plantation Drive</div>
+              <div class="plan-date">Created Jun 29, 2025</div>
+            </div>
+            <span class="badge rounded-pill" style="background:#fef3c7;color:#92400e;">Draft</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 order-lg-2 order-1 reveal">
+        <span class="section-label">My Plans</span>
+        <h2 class="section-title mt-2">All Your Plans in One Place</h2>
+        <p class="text-muted mt-3 mb-4" style="line-height:1.75;">Access, manage and track all your event plans from a single dashboard. Continue drafts, view published events and track your history.</p>
+        <ul class="ai-feature-list mb-4">
+          <li><i class="bi bi-check-circle-fill"></i> View all Drafts &amp; Published Events</li>
+          <li><i class="bi bi-check-circle-fill"></i> Continue from where you left off</li>
+          <li><i class="bi bi-check-circle-fill"></i> Search and filter your plans</li>
+          <li><i class="bi bi-check-circle-fill"></i> Full Event History Tracking</li>
+        </ul>
+        <a href="{% url 'event_planner:plan_history' %}" class="btn-hero-primary">
+          <i class="bi bi-folder2-open"></i> View My Plans
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 9: STATISTICS -->
+<section id="statistics">
+  <div class="container">
+    <div class="row align-items-center g-4 text-center">
+      <div class="col-6 col-lg-3">
+        <div class="stat-item">
+          <div class="stat-number" data-target="1000">0</div>
+          <div class="stat-label">Events Planned</div>
+        </div>
+      </div>
+      <div class="col-lg-1 d-none d-lg-block"><div class="stat-divider"></div></div>
+      <div class="col-6 col-lg-3">
+        <div class="stat-item">
+          <div class="stat-number" data-target="200">0</div>
+          <div class="stat-label">Communities</div>
+        </div>
+      </div>
+      <div class="col-lg-1 d-none d-lg-block"><div class="stat-divider"></div></div>
+      <div class="col-6 col-lg-2">
+        <div class="stat-item">
+          <div class="stat-number" data-target="95" data-suffix="%">0</div>
+          <div class="stat-label">Planning Accuracy</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">AI Assistance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 10: BENEFITS -->
+<section id="benefits">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <span class="section-label">Why EventAI</span>
+      <h2 class="section-title mt-2">Benefits of Using EventAI</h2>
+      <p class="section-subtitle mt-3">Save time, reduce errors and manage events like a professional.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="benefit-card">
+          <div class="benefit-icon bg-primary-soft"><i class="bi bi-lightning-charge text-primary"></i></div>
+          <div class="benefit-text">
+            <h6>Less Manual Work</h6>
+            <p>AI handles planning automatically so you focus on execution, not paperwork.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="benefit-card">
+          <div class="benefit-icon bg-success-soft"><i class="bi bi-clock text-success"></i></div>
+          <div class="benefit-text">
+            <h6>Save Time</h6>
+            <p>Generate complete plans in seconds instead of hours of manual planning.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="benefit-card">
+          <div class="benefit-icon bg-danger-soft"><i class="bi bi-patch-check text-danger"></i></div>
+          <div class="benefit-text">
+            <h6>Reduce Planning Errors</h6>
+            <p>AI ensures nothing is missed — budget, tasks, risks and resources are covered.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="benefit-card">
+          <div class="benefit-icon bg-info-soft"><i class="bi bi-people text-info"></i></div>
+          <div class="benefit-text">
+            <h6>Improve Coordination</h6>
+            <p>Structured plans and task checklists keep your team aligned and on track.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="benefit-card">
+          <div class="benefit-icon bg-warning-soft"><i class="bi bi-wallet2" style="color:#fd7e14"></i></div>
+          <div class="benefit-text">
+            <h6>Better Budget Management</h6>
+            <p>Category-wise breakdowns help you plan finances without overspending.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 reveal">
+        <div class="benefit-card">
+          <div class="benefit-icon bg-purple-soft"><i class="bi bi-diagram-3 text-purple"></i></div>
+          <div class="benefit-text">
+            <h6>Organised Workflow</h6>
+            <p>Drafts, published events and history keep your workflow structured and clean.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 11: FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="text-center mb-5 reveal">
+      <span class="section-label">FAQ</span>
+      <h2 class="section-title mt-2">Frequently Asked Questions</h2>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-8 reveal">
+        <div class="accordion faq-accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                What is EventAI?
+              </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">EventAI is a Community and Society Event Management System that helps organizers plan, create and manage events using Artificial Intelligence. It is designed for NGOs, colleges, clubs, societies and any community organization.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                How does the AI Planner work?
+              </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">You enter your event details such as name, type, venue, date, expected attendance and budget. The Gemini AI then generates a complete event plan with schedule, budget breakdown, resource list, task checklist and risk analysis within seconds.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                Can I edit the AI-generated plans?
+              </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">Yes. All AI-generated plans are fully editable. You can review the plan, make changes and regenerate sections if needed before saving or publishing.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                Can I save a plan as a draft?
+              </button>
+            </h2>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">Absolutely. EventAI supports draft saving. You can save any plan as a draft and come back to continue or edit it later from My Plans.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                Can I publish the event later?
+              </button>
+            </h2>
+            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">Yes. You can save your plan as a draft and publish it whenever you are ready. Published events appear in My Plans and your event history for easy reference.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 12: FINAL CTA -->
+<section id="cta">
+  <div class="container text-center position-relative" style="z-index:2;">
+    <div class="reveal">
+      <span class="badge rounded-pill px-3 py-2 mb-4 d-inline-block" style="background:rgba(255,255,255,0.15);color:#fff;font-size:0.8rem;font-weight:600;letter-spacing:0.08em;">GET STARTED TODAY</span>
+      <h2 class="cta-title mb-3">Ready to Organize Your Next<br>Community Event?</h2>
+      <p class="cta-subtitle mb-5">Join hundreds of communities already using EventAI to plan better events faster — powered by AI.</p>
+      <a href="{% url 'event_planner:planner_home' %}" class="btn-cta">
+        <i class="bi bi-robot"></i> Go to AI Planner
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Scroll Reveal
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Animated Counters
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  const suffix = el.dataset.suffix || '+';
+  const duration = 1800;
+  const step = target / (duration / 16);
+  let current = 0;
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) { current = target; clearInterval(timer); }
+    el.textContent = Math.floor(current) + suffix;
+  }, 16);
+}
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && e.target.dataset.target) {
+      animateCounter(e.target);
+      counterObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-number[data-target]').forEach(el => counterObserver.observe(el));
+</script>
 {% endblock %}

@@ -1,21 +1,707 @@
 {% extends 'base.html' %}
-{% block title %}Register - EventAI{% endblock %}
+{% block title %}Create Account — EventAI{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ---- Page Shell ---- */
+  .reg-page {
+    min-height: 100vh;
+    background: #F8FAFC;
+    display: flex;
+    align-items: stretch;
+  }
+
+  /* ---- Left Panel ---- */
+  .reg-left {
+    width: 45%;
+    background: linear-gradient(145deg, #1e3a8a 0%, #2563EB 55%, #0ea5e9 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .reg-left::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .reg-left::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 260px; height: 260px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+
+  .reg-left-content { position: relative; z-index: 2; max-width: 380px; }
+
+  .illus-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .illus-card {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    transition: transform 0.3s ease;
+  }
+  .illus-card:hover { transform: translateY(-4px); }
+  .illus-card .ic { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+  .illus-card .lbl { font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.9); }
+
+  .reg-left h2 {
+    color: #fff;
+    font-size: 1.9rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+  .reg-left p {
+    color: rgba(255,255,255,0.78);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .feature-list { list-style: none; padding: 0; margin: 0; }
+  .feature-list li {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.88rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+  }
+  .feature-list li i { color: #6ee7b7; font-size: 1rem; }
+
+  /* ---- Right Panel ---- */
+  .reg-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    overflow-y: auto;
+  }
+
+  .reg-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.09);
+    padding: 44px 40px;
+    width: 100%;
+    max-width: 520px;
+    animation: cardIn 0.5s ease both;
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reg-logo {
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: #2563EB;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .reg-logo .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #2563EB;
+    display: inline-block;
+  }
+
+  .reg-card h3 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin-bottom: 4px;
+  }
+  .reg-card .sub {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin-bottom: 28px;
+  }
+
+  /* ---- Form Fields ---- */
+  .form-group { margin-bottom: 18px; }
+
+  .form-group label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .input-wrap .field-icon {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    font-size: 1rem;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .input-wrap .toggle-pw {
+    position: absolute;
+    right: 14px;
+    color: #94a3b8;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 2;
+    border: none;
+    background: transparent;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .input-wrap .toggle-pw:hover { color: #2563EB; }
+
+  .form-control-reg {
+    width: 100%;
+    height: 48px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 0 14px 0 42px;
+    font-size: 0.92rem;
+    color: #0F172A;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    font-family: 'Inter', sans-serif;
+  }
+  .form-control-reg:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+  }
+  .form-control-reg.has-toggle { padding-right: 42px; }
+  .form-control-reg.is-invalid { border-color: #ef4444; }
+  .form-control-reg.is-invalid:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.12); }
+  .form-control-reg.is-valid { border-color: #10B981; }
+
+  .field-error {
+    font-size: 0.78rem;
+    color: #ef4444;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ---- Name row ---- */
+  .name-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* ---- Password Strength ---- */
+  .pw-strength-bar {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .pw-bar-seg {
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    background: #E2E8F0;
+    transition: background 0.35s ease;
+  }
+  .pw-bar-seg.weak   { background: #ef4444; }
+  .pw-bar-seg.medium { background: #f59e0b; }
+  .pw-bar-seg.strong { background: #10B981; }
+
+  .pw-strength-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 4px;
+    color: #64748b;
+    height: 16px;
+    transition: color 0.3s;
+  }
+
+  .pw-reqs { margin-top: 10px; }
+  .pw-reqs .req {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+    transition: color 0.25s;
+  }
+  .pw-reqs .req i { font-size: 0.7rem; transition: color 0.25s; }
+  .pw-reqs .req.met { color: #10B981; }
+  .pw-reqs .req.met i { color: #10B981; }
+
+  /* ---- Submit Button ---- */
+  .btn-register {
+    width: 100%;
+    height: 52px;
+    background: linear-gradient(135deg, #2563EB, #0ea5e9);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.3);
+    position: relative;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(37,99,235,0.4);
+  }
+  .btn-register:active { transform: translateY(0); }
+  .btn-register .spinner {
+    display: none;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Ripple */
+  .btn-register::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    width: 0; height: 0;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+  }
+  .btn-register:active::after {
+    width: 300px; height: 300px; opacity: 0;
+  }
+
+  /* ---- Divider ---- */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 0;
+    color: #cbd5e1;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #E2E8F0;
+  }
+
+  .login-link {
+    text-align: center;
+    font-size: 0.88rem;
+    color: #64748b;
+  }
+  .login-link a {
+    color: #2563EB;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .login-link a:hover { color: #1d4ed8; }
+
+  /* ---- Non-field errors ---- */
+  .non-field-errors {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #b91c1c;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 991px) {
+    .reg-page { flex-direction: column; }
+    .reg-left {
+      width: 100%;
+      padding: 40px 24px;
+      min-height: auto;
+    }
+    .illus-grid { grid-template-columns: repeat(4, 1fr); }
+    .reg-card { padding: 32px 24px; }
+  }
+  @media (max-width: 600px) {
+    .reg-left { display: none; }
+    .reg-right { padding: 20px 16px; }
+    .reg-card { padding: 28px 20px; border-radius: 16px; }
+    .name-row { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm p-4">
-                <h4 class="fw-bold mb-4 text-center">Create an Account</h4>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary w-100 mt-3">Register</button>
-                </form>
-                <div class="text-center mt-3">
-                    <small>Already have an account? <a href="{% url 'accounts:login' %}">Login</a></small>
-                </div>
-            </div>
+<div class="reg-page">
+
+  <!-- ===== LEFT PANEL ===== -->
+  <div class="reg-left">
+    <div class="reg-left-content">
+
+      <div class="illus-grid">
+        <div class="illus-card">
+          <span class="ic">👥</span>
+          <span class="lbl">Community</span>
         </div>
+        <div class="illus-card">
+          <span class="ic">📅</span>
+          <span class="lbl">Calendar</span>
+        </div>
+        <div class="illus-card">
+          <span class="ic">🤖</span>
+          <span class="lbl">AI Planner</span>
+        </div>
+        <div class="illus-card">
+          <span class="ic">🎉</span>
+          <span class="lbl">Events</span>
+        </div>
+      </div>
+
+      <h2>Join EventAI</h2>
+      <p>Create your account and start planning community events with AI assistance.</p>
+
+      <ul class="feature-list">
+        <li><i class="bi bi-check-circle-fill"></i> AI-Powered Event Planning</li>
+        <li><i class="bi bi-check-circle-fill"></i> Smart Budget Breakdown</li>
+        <li><i class="bi bi-check-circle-fill"></i> Draft Saving &amp; Resume</li>
+        <li><i class="bi bi-check-circle-fill"></i> Publish &amp; Manage Events</li>
+      </ul>
+
     </div>
+  </div>
+
+  <!-- ===== RIGHT PANEL ===== -->
+  <div class="reg-right">
+    <div class="reg-card">
+
+      <!-- Logo -->
+      <div class="reg-logo">
+        <i class="bi bi-calendar-event-fill"></i>
+        EventAI
+      </div>
+
+      <h3>Create Your Account</h3>
+      <p class="sub">Create your free account to start managing community events.</p>
+
+      <!-- Non-field errors -->
+      {% if form.non_field_errors %}
+        <div class="non-field-errors">
+          <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+          <div>
+            {% for error in form.non_field_errors %}
+              <div>{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Django messages -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="non-field-errors" style="{% if message.tags == 'success' %}background:#f0fdf4;border-color:#bbf7d0;color:#15803d;{% endif %}">
+            <i class="bi bi-info-circle-fill mt-1"></i>
+            <div>{{ message }}</div>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="POST" id="regForm" novalidate>
+        {% csrf_token %}
+
+        <!-- Username -->
+        <div class="form-group">
+          <label for="id_username">Username</label>
+          <div class="input-wrap">
+            <i class="bi bi-person field-icon"></i>
+            <input
+              type="text"
+              name="username"
+              id="id_username"
+              class="form-control-reg {% if form.username.errors %}is-invalid{% endif %}"
+              value="{{ form.username.value|default:'' }}"
+              placeholder="Choose a username"
+              autocomplete="username"
+              required
+            >
+          </div>
+          {% for error in form.username.errors %}
+            <div class="field-error"><i class="bi bi-exclamation-circle"></i>{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="id_email">Email Address</label>
+          <div class="input-wrap">
+            <i class="bi bi-envelope field-icon"></i>
+            <input
+              type="email"
+              name="email"
+              id="id_email"
+              class="form-control-reg {% if form.email.errors %}is-invalid{% endif %}"
+              value="{{ form.email.value|default:'' }}"
+              placeholder="your@email.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+          {% for error in form.email.errors %}
+            <div class="field-error"><i class="bi bi-exclamation-circle"></i>{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- First Name & Last Name -->
+        <div class="name-row">
+          <div class="form-group">
+            <label for="id_first_name">First Name</label>
+            <div class="input-wrap">
+              <i class="bi bi-person-badge field-icon"></i>
+              <input
+                type="text"
+                name="first_name"
+                id="id_first_name"
+                class="form-control-reg {% if form.first_name.errors %}is-invalid{% endif %}"
+                value="{{ form.first_name.value|default:'' }}"
+                placeholder="First name"
+                autocomplete="given-name"
+                required
+              >
+            </div>
+            {% for error in form.first_name.errors %}
+              <div class="field-error"><i class="bi bi-exclamation-circle"></i>{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="form-group">
+            <label for="id_last_name">Last Name</label>
+            <div class="input-wrap">
+              <i class="bi bi-person-badge field-icon"></i>
+              <input
+                type="text"
+                name="last_name"
+                id="id_last_name"
+                class="form-control-reg {% if form.last_name.errors %}is-invalid{% endif %}"
+                value="{{ form.last_name.value|default:'' }}"
+                placeholder="Last name"
+                autocomplete="family-name"
+                required
+              >
+            </div>
+            {% for error in form.last_name.errors %}
+              <div class="field-error"><i class="bi bi-exclamation-circle"></i>{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="id_password">Password</label>
+          <div class="input-wrap">
+            <i class="bi bi-lock field-icon"></i>
+            <input
+              type="password"
+              name="password"
+              id="id_password"
+              class="form-control-reg has-toggle {% if form.password.errors %}is-invalid{% endif %}"
+              placeholder="Create a strong password"
+              autocomplete="new-password"
+              required
+            >
+            <button type="button" class="toggle-pw" onclick="togglePw('id_password', this)" aria-label="Show password">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+          {% for error in form.password.errors %}
+            <div class="field-error"><i class="bi bi-exclamation-circle"></i>{{ error }}</div>
+          {% endfor %}
+
+          <!-- Strength bar -->
+          <div class="pw-strength-bar" id="strengthBar">
+            <div class="pw-bar-seg" id="seg1"></div>
+            <div class="pw-bar-seg" id="seg2"></div>
+            <div class="pw-bar-seg" id="seg3"></div>
+            <div class="pw-bar-seg" id="seg4"></div>
+            <div class="pw-bar-seg" id="seg5"></div>
+          </div>
+          <div class="pw-strength-label" id="strengthLabel"></div>
+
+          <!-- Requirements -->
+          <div class="pw-reqs">
+            <div class="req" id="req-len"><i class="bi bi-circle"></i> 8+ characters</div>
+            <div class="req" id="req-upper"><i class="bi bi-circle"></i> Uppercase letter</div>
+            <div class="req" id="req-lower"><i class="bi bi-circle"></i> Lowercase letter</div>
+            <div class="req" id="req-num"><i class="bi bi-circle"></i> Number</div>
+            <div class="req" id="req-special"><i class="bi bi-circle"></i> Special character</div>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="id_password_confirm">Confirm Password</label>
+          <div class="input-wrap">
+            <i class="bi bi-lock-fill field-icon"></i>
+            <input
+              type="password"
+              name="password_confirm"
+              id="id_password_confirm"
+              class="form-control-reg has-toggle {% if form.password_confirm.errors %}is-invalid{% endif %}"
+              placeholder="Repeat your password"
+              autocomplete="new-password"
+              required
+            >
+            <button type="button" class="toggle-pw" onclick="togglePw('id_password_confirm', this)" aria-label="Show confirm password">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+          {% for error in form.password_confirm.errors %}
+            <div class="field-error"><i class="bi bi-exclamation-circle"></i>{{ error }}</div>
+          {% endfor %}
+          <div class="field-error" id="matchError" style="display:none;">
+            <i class="bi bi-exclamation-circle"></i> Passwords do not match
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-register" id="submitBtn">
+          <span class="spinner" id="btnSpinner"></span>
+          <span id="btnText"><i class="bi bi-person-plus-fill"></i> Create Account</span>
+        </button>
+
+      </form>
+
+      <div class="divider">or</div>
+
+      <div class="login-link">
+        Already have an account? <a href="{% url 'accounts:login' %}">Sign in</a>
+      </div>
+
+    </div>
+  </div>
+
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// --- Show / Hide Password ---
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  const icon = btn.querySelector('i');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.className = 'bi bi-eye-slash';
+  } else {
+    inp.type = 'password';
+    icon.className = 'bi bi-eye';
+  }
+}
+
+// --- Password Strength ---
+const pwInput = document.getElementById('id_password');
+const segs    = [1,2,3,4,5].map(i => document.getElementById('seg' + i));
+const label   = document.getElementById('strengthLabel');
+
+const reqs = {
+  len:     { el: document.getElementById('req-len'),     re: pw => pw.length >= 8 },
+  upper:   { el: document.getElementById('req-upper'),   re: pw => /[A-Z]/.test(pw) },
+  lower:   { el: document.getElementById('req-lower'),   re: pw => /[a-z]/.test(pw) },
+  num:     { el: document.getElementById('req-num'),     re: pw => /\d/.test(pw) },
+  special: { el: document.getElementById('req-special'), re: pw => /[^A-Za-z0-9]/.test(pw) },
+};
+
+function updateStrength(pw) {
+  let score = 0;
+  for (const key in reqs) {
+    const met = reqs[key].re(pw);
+    reqs[key].el.classList.toggle('met', met);
+    const icon = reqs[key].el.querySelector('i');
+    icon.className = met ? 'bi bi-check-circle-fill' : 'bi bi-circle';
+    if (met) score++;
+  }
+
+  const levels = [
+    { segs: 0, cls: '',       lbl: '',         color: '#64748b' },
+    { segs: 1, cls: 'weak',   lbl: 'Weak',     color: '#ef4444' },
+    { segs: 2, cls: 'weak',   lbl: 'Weak',     color: '#ef4444' },
+    { segs: 3, cls: 'medium', lbl: 'Medium',   color: '#f59e0b' },
+    { segs: 4, cls: 'medium', lbl: 'Medium',   color: '#f59e0b' },
+    { segs: 5, cls: 'strong', lbl: 'Strong ✓', color: '#10B981' },
+  ];
+  const lvl = levels[score];
+
+  segs.forEach((s, i) => {
+    s.classList.remove('weak', 'medium', 'strong');
+    if (i < lvl.segs) s.classList.add(lvl.cls);
+  });
+
+  label.textContent  = pw.length ? lvl.lbl : '';
+  label.style.color  = lvl.color;
+}
+
+pwInput.addEventListener('input', () => updateStrength(pwInput.value));
+
+// --- Match check ---
+const confirmInput = document.getElementById('id_password_confirm');
+const matchError   = document.getElementById('matchError');
+
+function checkMatch() {
+  if (!confirmInput.value) { matchError.style.display = 'none'; return; }
+  const mismatch = pwInput.value !== confirmInput.value;
+  matchError.style.display = mismatch ? 'flex' : 'none';
+  confirmInput.classList.toggle('is-invalid', mismatch);
+  confirmInput.classList.toggle('is-valid',   !mismatch);
+}
+pwInput.addEventListener('input', checkMatch);
+confirmInput.addEventListener('input', checkMatch);
+
+// --- Loading spinner on submit ---
+document.getElementById('regForm').addEventListener('submit', function() {
+  const btn = document.getElementById('submitBtn');
+  const spinner = document.getElementById('btnSpinner');
+  const text    = document.getElementById('btnText');
+  spinner.style.display = 'block';
+  text.style.display    = 'none';
+  btn.disabled = true;
+});
+</script>
 {% endblock %}
